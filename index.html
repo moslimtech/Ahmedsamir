@@ -4,184 +4,377 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>أحمد سمير | Ahmed Samir</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 
   <style>
-    body {
+    * {
       margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
       font-family: "Cairo", sans-serif;
-      background: #f8f9fb;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: #333;
       text-align: center;
+      min-height: 100vh;
     }
 
     header {
-      padding: 60px 20px 40px;
-      background: linear-gradient(135deg, #e3f2fd, #f9f9f9);
-      overflow: hidden;
+      padding: 60px 20px 50px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
     }
 
+    /* 3D Cube Styles */
     .image-container {
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 20px;
-      perspective: 800px;
-      flex-wrap: wrap;
+      perspective: 1200px;
+      margin-bottom: 30px;
+      height: 300px;
     }
 
-    .image-container img {
-      width: 220px;
-      height: 220px;
-      object-fit: cover;
-      border-radius: 20px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-      transition: transform 0.4s ease;
+    .cube {
+      width: 250px;
+      height: 250px;
+      position: relative;
+      transform-style: preserve-3d;
+      animation: rotateCube 8s infinite linear;
     }
 
-    .image-container img:hover {
-      transform: rotateY(15deg) rotateX(10deg) scale(1.05);
-    }
-
-    h1 {
-      margin-top: 25px;
-      font-size: 28px;
-      color: #0d47a1;
-    }
-
-    h2 {
-      margin-top: 5px;
-      font-weight: 400;
-      color: #555;
-    }
-
-    .slogan {
-      margin-top: 20px;
-      font-size: 20px;
-      color: #1976d2;
+    .cube-face {
+      position: absolute;
+      width: 250px;
+      height: 250px;
+      background-size: cover;
+      background-position: center;
+      border-radius: 15px;
+      border: 3px solid rgba(102, 126, 234, 0.3);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 14px;
+      color: white;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
       font-weight: bold;
     }
 
-    .buttons {
+    .cube-face:nth-child(1) {
+      background-image: url('photo1.jpg');
+      transform: translateZ(125px);
+    }
+
+    .cube-face:nth-child(2) {
+      background-image: url('photo2.jpg');
+      transform: rotateY(90deg) translateZ(125px);
+    }
+
+    .cube-face:nth-child(3) {
+      background-image: url('photo1.jpg');
+      transform: rotateY(180deg) translateZ(125px);
+    }
+
+    .cube-face:nth-child(4) {
+      background-image: url('photo2.jpg');
+      transform: rotateY(-90deg) translateZ(125px);
+    }
+
+    .cube-face:nth-child(5) {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      transform: rotateX(90deg) translateZ(125px);
+      display: none;
+    }
+
+    .cube-face:nth-child(6) {
+      background-image: url('photo1.jpg');
+      transform: rotateX(-90deg) translateZ(125px);
+    }
+
+    @keyframes rotateCube {
+      0% {
+        transform: rotateX(0deg) rotateY(0deg);
+      }
+      100% {
+        transform: rotateX(360deg) rotateY(360deg);
+      }
+    }
+
+    .cube:hover {
+      animation-play-state: paused;
+    }
+
+    h1 {
       margin-top: 30px;
+      font-size: 36px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-weight: 700;
+    }
+
+    h2 {
+      margin-top: 8px;
+      font-size: 18px;
+      color: #888;
+      font-weight: 400;
+      letter-spacing: 1px;
+    }
+
+    .slogan {
+      margin-top: 25px;
+      font-size: 18px;
+      color: #667eea;
+      font-weight: 600;
+      line-height: 1.6;
+    }
+
+    .slogan small {
+      display: block;
+      font-size: 14px;
+      color: #999;
+      margin-top: 8px;
+      font-weight: 400;
+    }
+
+    .buttons {
+      margin-top: 35px;
       display: flex;
       justify-content: center;
       gap: 15px;
       flex-wrap: wrap;
+      flex-direction: row-reverse;
     }
 
     .btn {
-      background: #1976d2;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
       border: none;
-      padding: 12px 25px;
-      border-radius: 8px;
+      padding: 14px 30px;
+      border-radius: 50px;
       font-size: 16px;
+      font-weight: 600;
       cursor: pointer;
-      transition: background 0.3s;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+      text-decoration: none;
+      display: inline-block;
     }
 
     .btn:hover {
-      background: #0d47a1;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
     }
 
-    /* Popup overlay */
+    .btn:active {
+      transform: translateY(-1px);
+    }
+
+    /* Popup Styles */
     .overlay {
       display: none;
       position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.6);
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
       justify-content: center;
       align-items: center;
       z-index: 1000;
+      animation: fadeInOverlay 0.3s ease;
+    }
+
+    @keyframes fadeInOverlay {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
     }
 
     .popup {
       background: white;
-      border-radius: 12px;
+      border-radius: 15px;
       width: 90%;
-      max-width: 800px;
-      padding: 10px;
+      max-width: 900px;
+      padding: 20px;
       position: relative;
-      box-shadow: 0 0 20px rgba(0,0,0,0.4);
-      animation: fadeIn 0.3s ease;
+      box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
+      animation: slideInPopup 0.4s ease;
+    }
+
+    @keyframes slideInPopup {
+      from {
+        opacity: 0;
+        transform: scale(0.9) translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
     }
 
     iframe {
       width: 100%;
-      height: 500px;
+      height: 600px;
       border: none;
-      border-radius: 8px;
+      border-radius: 10px;
     }
 
     .close-btn {
       position: absolute;
-      top: 10px;
-      right: 10px;
-      background: red;
+      top: 15px;
+      left: 15px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
       border: none;
       border-radius: 50%;
-      width: 30px;
-      height: 30px;
+      width: 40px;
+      height: 40px;
       cursor: pointer;
-      font-size: 18px;
+      font-size: 24px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: all 0.3s ease;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.95); }
-      to { opacity: 1; transform: scale(1); }
+    .close-btn:hover {
+      transform: rotate(90deg) scale(1.1);
     }
 
     footer {
-      margin-top: 50px;
-      padding: 20px;
+      margin-top: 60px;
+      padding: 30px 20px;
       font-size: 14px;
-      color: #666;
-      background: #f1f1f1;
-      border-top: 1px solid #ddd;
+      color: white;
+      background: rgba(0, 0, 0, 0.2);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
     }
 
+    footer strong {
+      color: #fff;
+      font-weight: 600;
+    }
+
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 28px;
+      }
+
+      .image-container {
+        height: 250px;
+      }
+
+      .cube,
+      .cube-face {
+        width: 200px;
+        height: 200px;
+      }
+
+      .cube-face:nth-child(1) {
+        transform: translateZ(100px);
+      }
+
+      .cube-face:nth-child(2) {
+        transform: rotateY(90deg) translateZ(100px);
+      }
+
+      .cube-face:nth-child(3) {
+        transform: rotateY(180deg) translateZ(100px);
+      }
+
+      .cube-face:nth-child(4) {
+        transform: rotateY(-90deg) translateZ(100px);
+      }
+
+      .cube-face:nth-child(6) {
+        transform: rotateX(-90deg) translateZ(100px);
+      }
+
+      iframe {
+        height: 400px;
+      }
+
+      .buttons {
+        flex-direction: column;
+      }
+
+      .btn {
+        width: 100%;
+      }
+    }
   </style>
 </head>
 
 <body>
   <header>
     <div class="image-container">
-      <img src="photo1.jpg" alt="صورة أحمد سمير 1" />
-      <img src="photo2.jpg" alt="صورة أحمد سمير 2" />
+      <div class="cube">
+        <div class="cube-face">صورة 1</div>
+        <div class="cube-face">صورة 2</div>
+        <div class="cube-face">صورة 3</div>
+        <div class="cube-face">صورة 4</div>
+        <div class="cube-face">أعلى</div>
+        <div class="cube-face">أسفل</div>
+      </div>
     </div>
 
     <h1>أحمد سمير</h1>
     <h2>Ahmed Samir</h2>
-    <div class="slogan">التفكير بداية التغيير<br><small>Thinking is the Beginning of Change</small></div>
+    <div class="slogan">
+      التفكير بداية التغيير
+      <small>Thinking is the Beginning of Change</small>
+    </div>
 
     <div class="buttons">
-      <a href="https://wa.me/201005183071" target="_blank" class="btn">تواصل عبر واتساب</a>
-      <a href="https://m.facebook.com/ahmd.smyr.523979/" target="_blank" class="btn">صفحة فيسبوك</a>
-      <button class="btn" onclick="openPopup()">📄 عرض البرنامج الانتخابي</button>
+      <a href="https://wa.me/201005183071" target="_blank" class="btn">📱 واتساب</a>
+      <a href="https://m.facebook.com/ahmd.smyr.523979/" target="_blank" class="btn">👍 فيسبوك</a>
+      <button class="btn" onclick="openPopup()">📄 البرنامج الانتخابي</button>
     </div>
   </header>
 
   <!-- Popup -->
   <div class="overlay" id="overlay">
     <div class="popup">
-      <button class="close-btn" onclick="closePopup()">×</button>
+      <button class="close-btn" onclick="closePopup()">✕</button>
       <iframe src="program.pdf"></iframe>
     </div>
   </div>
 
   <footer>
-    Developed by <strong>Muslim Tech</strong>
+    تم التطوير بواسطة <strong>Muslim Tech</strong>
   </footer>
 
   <script>
     function openPopup() {
       document.getElementById("overlay").style.display = "flex";
+      document.body.style.overflow = "hidden";
     }
+
     function closePopup() {
       document.getElementById("overlay").style.display = "none";
+      document.body.style.overflow = "auto";
     }
+
+    // إغلاق الـ popup عند الضغط على الخلفية
+    document.getElementById("overlay").addEventListener("click", function(e) {
+      if (e.target === this) {
+        closePopup();
+      }
+    });
+
+    // إغلاق الـ popup بزر Escape
+    document.addEventListener("keydown", function(e) {
+      if (e.key === "Escape") {
+        closePopup();
+      }
+    });
   </script>
 </body>
 </html>

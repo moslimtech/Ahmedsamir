@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>الاستاذ الدكتور أحمد سمير | Ahmed Samir</title>
+  <title>أحمد سمير | Ahmed Samir</title>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
   
   <style>
@@ -382,7 +382,7 @@
       border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
-    iframe {
+    .popup iframe {
       width: 100%;
       height: calc(100% - 10px);
       border: none;
@@ -463,6 +463,93 @@
       font-size: 0.75rem;
       margin-top: 5px;
       display: block;
+    }
+
+    /* Location Map Section */
+    .location-section {
+      margin-top: 40px;
+      padding: 30px 20px;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .location-title {
+      color: white;
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .map-container {
+      position: relative;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+      margin-bottom: 20px;
+      height: 350px;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .map-container iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .map-buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .map-btn {
+      background: linear-gradient(135deg, #EA4335 0%, #C5221F 100%);
+      color: white;
+      border: 2px solid rgba(234, 67, 53, 0.5);
+      padding: 12px 25px;
+      border-radius: 30px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .map-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(234, 67, 53, 0.4);
+      background: linear-gradient(135deg, #C5221F 0%, #EA4335 100%);
+    }
+
+    .map-btn.secondary {
+      background: linear-gradient(135deg, #4285F4 0%, #1a73e8 100%);
+      border-color: rgba(66, 133, 244, 0.5);
+    }
+
+    .map-btn.secondary:hover {
+      background: linear-gradient(135deg, #1a73e8 0%, #4285F4 100%);
+      box-shadow: 0 6px 20px rgba(66, 133, 244, 0.4);
+    }
+
+    .location-info {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-top: 15px;
     }
 
     /* QR Code Section */
@@ -643,7 +730,21 @@
         height: 180px;
       }
 
-      .qr-section, .countdown-section {
+      .map-container {
+        height: 280px;
+      }
+      
+      .map-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .map-btn {
+        width: 100%;
+        max-width: 280px;
+      }
+
+      .qr-section, .countdown-section, .location-section {
         margin-top: 30px;
         padding: 20px;
       }
@@ -760,87 +861,87 @@
         <iframe 
           src="https://www.youtube.com/embed/RVsmwV-a4pw" 
           allowfullscreen
-         
+          title="فيديو البرنامج الانتخابي">
         </iframe>
-       
+        <p class="video-caption">البرنامج الانتخابي الكامل</p>
       </div>
       <div class="video-item">
         <iframe 
           src="https://www.youtube.com/embed/tYMG-ZnPZN8" 
           allowfullscreen
-         
+          title="كلمة المرشح">
         </iframe>
-       
+        <p class="video-caption">كلمة أحمد سمير للناخبين</p>
       </div>
       <div class="video-item">
         <iframe 
           src="https://www.youtube.com/embed/N1NtWAD6uAA" 
           allowfullscreen
-         
+          title="رؤية المستقبل">
         </iframe>
-      
+        <p class="video-caption">رؤيتنا للمستقبل</p>
       </div>
     </div>
 
     <!-- Gallery Section -->
     <div class="gallery-section">
-      <h3 class="section-title">معرض الصور</h3>
+      <h3 class="section-title">📸 معرض الصور</h3>
       <div class="gallery-container">
-        <div class="gallery-item" onclick="openImagePopup('image1.jpg')">
+        <div class="gallery-item" onclick="openImagePopup('3.jpg')">
           <img src="3.jpg" alt="صورة البرنامج 1">
           <div class="gallery-item-overlay">
             <span>🔍</span>
           </div>
         </div>
-        <div class="gallery-item" onclick="openImagePopup('image2.jpg')">
+        <div class="gallery-item" onclick="openImagePopup('12.jpg')">
           <img src="12.jpg" alt="صورة البرنامج 2">
           <div class="gallery-item-overlay">
             <span>🔍</span>
           </div>
         </div>
-        <div class="gallery-item" onclick="openImagePopup('image3.jpg')">
+        <div class="gallery-item" onclick="openImagePopup('4.jpg')">
           <img src="4.jpg" alt="صورة البرنامج 3">
           <div class="gallery-item-overlay">
             <span>🔍</span>
           </div>
         </div>
-        <div class="gallery-item" onclick="openImagePopup('image4.jpg')">
+        <div class="gallery-item" onclick="openImagePopup('5.jpg')">
           <img src="5.jpg" alt="صورة البرنامج 4">
           <div class="gallery-item-overlay">
             <span>🔍</span>
           </div>
         </div>
-        <div class="gallery-item" onclick="openImagePopup('image5.jpg')">
+        <div class="gallery-item" onclick="openImagePopup('6.jpg')">
           <img src="6.jpg" alt="صورة البرنامج 5">
           <div class="gallery-item-overlay">
             <span>🔍</span>
           </div>
         </div>
-        <div class="gallery-item" onclick="openImagePopup('image6.jpg')">
+        <div class="gallery-item" onclick="openImagePopup('7.jpg')">
           <img src="7.jpg" alt="صورة البرنامج 6">
           <div class="gallery-item-overlay">
             <span>🔍</span>
           </div>
         </div>
-        <div class="gallery-item" onclick="openImagePopup('image7.jpg')">
+        <div class="gallery-item" onclick="openImagePopup('8.jpg')">
           <img src="8.jpg" alt="صورة البرنامج 7">
           <div class="gallery-item-overlay">
             <span>🔍</span>
           </div>
         </div>
-        <div class="gallery-item" onclick="openImagePopup('image8.jpg')">
+        <div class="gallery-item" onclick="openImagePopup('9.jpg')">
           <img src="9.jpg" alt="صورة البرنامج 8">
           <div class="gallery-item-overlay">
             <span>🔍</span>
           </div>
         </div>
-        <div class="gallery-item" onclick="openImagePopup('image9.jpg')">
+        <div class="gallery-item" onclick="openImagePopup('10.jpg')">
           <img src="10.jpg" alt="صورة البرنامج 9">
           <div class="gallery-item-overlay">
             <span>🔍</span>
           </div>
         </div>
-        <div class="gallery-item" onclick="openImagePopup('image10.jpg')">
+        <div class="gallery-item" onclick="openImagePopup('11.jpg')">
           <img src="11.jpg" alt="صورة البرنامج 10">
           <div class="gallery-item-overlay">
             <span>🔍</span>
@@ -854,6 +955,40 @@
   <div class="countdown-section">
     <div class="countdown-title">⏰ المتبقي لموعد الانتخابات - الجمعة القادمة</div>
     <div class="countdown-timer" id="countdown"></div>
+  </div>
+
+  <!-- Location Map Section -->
+  <div class="location-section">
+    <div class="location-title">
+      <span>📍</span>
+      <span>موقع نادي الزهور</span>
+    </div>
+    
+    <div class="map-container">
+      <iframe 
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3452.8799447087536!2d31.330869!3d30.084647!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x145815c64e6663fb%3A0x4c5e5e1c77fe5ba5!2sEl%20Zohour%20Sporting%20Club!5e0!3m2!1sen!2seg!4v1234567890"
+        allowfullscreen
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        title="موقع نادي الزهور">
+      </iframe>
+    </div>
+    
+    <div class="map-buttons">
+      <a href="https://maps.app.goo.gl/H9YJDJf5gKhQuRoSA" target="_blank" class="map-btn">
+        <span>🗺️</span>
+        <span>فتح في خرائط جوجل</span>
+      </a>
+      <a href="https://maps.app.goo.gl/H9YJDJf5gKhQuRoSA" target="_blank" class="map-btn secondary">
+        <span>🧭</span>
+        <span>الحصول على الاتجاهات</span>
+      </a>
+    </div>
+    
+    <div class="location-info">
+      <strong>📌 العنوان:</strong> نادي الزهور الرياضي<br>
+      <small>اضغط على الأزرار للحصول على الاتجاهات مباشرة</small>
+    </div>
   </div>
 
   <!-- QR Code Section -->
@@ -911,8 +1046,7 @@
   <script>
     // الرابط المراد مشاركته
     const shareURL = 'https://moslimtech.github.io/Ahmedsamir/';
-    const shareText = 'تعرف علي الاستاذ الدكتور احمد سمير - المرشح علي مقعد عضوية مجلس ادارة نادي الزهور رقم(1) ';
-    
+    const shareText = 'تعرف علي الاستاذ الدكتور احمد سمير - المرشح علي مقعد عضوية مجلس ادارة نادي الزهور رقم(1)';
 
     // Adapt cube to image size
     function adaptCubeToImage(cubeId, imageSrc) {

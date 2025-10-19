@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>أحمد سمير | Ahmed Samir</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: "Cairo", sans-serif;
+      background: #f8f9fb;
+      color: #333;
+      text-align: center;
+    }
+
+    header {
+      padding: 60px 20px 40px;
+      background: linear-gradient(135deg, #e3f2fd, #f9f9f9);
+      overflow: hidden;
+    }
+
+    .image-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      perspective: 800px;
+      flex-wrap: wrap;
+    }
+
+    .image-container img {
+      width: 220px;
+      height: 220px;
+      object-fit: cover;
+      border-radius: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+      transition: transform 0.4s ease;
+    }
+
+    .image-container img:hover {
+      transform: rotateY(15deg) rotateX(10deg) scale(1.05);
+    }
+
+    h1 {
+      margin-top: 25px;
+      font-size: 28px;
+      color: #0d47a1;
+    }
+
+    h2 {
+      margin-top: 5px;
+      font-weight: 400;
+      color: #555;
+    }
+
+    .slogan {
+      margin-top: 20px;
+      font-size: 20px;
+      color: #1976d2;
+      font-weight: bold;
+    }
+
+    .buttons {
+      margin-top: 30px;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      background: #1976d2;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .btn:hover {
+      background: #0d47a1;
+    }
+
+    /* Popup overlay */
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .popup {
+      background: white;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 800px;
+      padding: 10px;
+      position: relative;
+      box-shadow: 0 0 20px rgba(0,0,0,0.4);
+      animation: fadeIn 0.3s ease;
+    }
+
+    iframe {
+      width: 100%;
+      height: 500px;
+      border: none;
+      border-radius: 8px;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: red;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      cursor: pointer;
+      font-size: 18px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    footer {
+      margin-top: 50px;
+      padding: 20px;
+      font-size: 14px;
+      color: #666;
+      background: #f1f1f1;
+      border-top: 1px solid #ddd;
+    }
+
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="image-container">
+      <img src="photo1.jpg" alt="صورة أحمد سمير 1" />
+      <img src="photo2.jpg" alt="صورة أحمد سمير 2" />
+    </div>
+
+    <h1>أحمد سمير</h1>
+    <h2>Ahmed Samir</h2>
+    <div class="slogan">التفكير بداية التغيير<br><small>Thinking is the Beginning of Change</small></div>
+
+    <div class="buttons">
+      <a href="https://wa.me/201005183071" target="_blank" class="btn">تواصل عبر واتساب</a>
+      <a href="https://m.facebook.com/ahmd.smyr.523979/" target="_blank" class="btn">صفحة فيسبوك</a>
+      <button class="btn" onclick="openPopup()">📄 عرض البرنامج الانتخابي</button>
+    </div>
+  </header>
+
+  <!-- Popup -->
+  <div class="overlay" id="overlay">
+    <div class="popup">
+      <button class="close-btn" onclick="closePopup()">×</button>
+      <iframe src="program.pdf"></iframe>
+    </div>
+  </div>
+
+  <footer>
+    Developed by <strong>Muslim Tech</strong>
+  </footer>
+
+  <script>
+    function openPopup() {
+      document.getElementById("overlay").style.display = "flex";
+    }
+    function closePopup() {
+      document.getElementById("overlay").style.display = "none";
+    }
+  </script>
+</body>
+</html>

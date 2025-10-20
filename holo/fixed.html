@@ -13,39 +13,55 @@
       background:rgba(0,0,0,0.45); color:white; padding:8px 10px; 
       border-radius:6px; font-size:14px; 
     }
+    /* Canvas لتدوير الزوايا */
+    #roundedCanvas {
+      display: none;
+    }
   </style>
 </head>
 <body>
   <div id="hint">وجّه الكاميرا على ماركر Hiro لعرض الشعار.</div>
+  <canvas id="roundedCanvas"></canvas>
 
   <a-scene embedded arjs="debugUIEnabled: false;">
     <a-assets>
       <img id="logoTex" src="logo.png" crossorigin="anonymous" />
+      <canvas id="roundedLogo"></canvas>
     </a-assets>
 
     <a-marker preset="hiro">
       <!-- الهيكل الرئيسي للهولوجرام -->
       <a-entity position="0 0 0">
-        <!-- الصورة الأصلية (بدون تغيير الألوان) -->
+        <!-- الصورة العمودية مع الالتفاف والزوايا الدائرية -->
         <a-plane 
-          position="0 0.75 0" 
-          rotation="-90 0 0" 
+          position="0 0.8 0" 
+          rotation="0 0 0" 
           width="1.1" 
           height="1.6"
-          material="src: #logoTex; shader: flat; transparent: true; alphaTest: 0.01"
-        ></a-plane>
+          material="src: #roundedLogo; shader: flat; transparent: true; alphaTest: 0.01"
+        >
+          <!-- تأثير الالتفاف البطيء -->
+          <a-animation 
+            attribute="rotation" 
+            from="0 0 0" 
+            to="0 360 0" 
+            dur="8000" 
+            repeat="indefinite" 
+            easing="linear"
+          ></a-animation>
+        </a-plane>
 
-        <!-- خط مسح رأسي خفيف (Scanline) -->
+        <!-- خط مسح عمودي خفيف (Scanline) -->
         <a-plane 
-          position="0 -0.8 0.001" 
+          position="0 0 0.001" 
           width="1.1" 
           height="0.03"
           material="color: #00eaff; transparent: true; opacity: 0.12; blending: additive"
         >
           <a-animation 
             attribute="position" 
-            from="0 -0.8 0.001" 
-            to="0 0.8 0.001" 
+            from="0 0 0.001" 
+            to="0 1.6 0.001" 
             dur="2400" 
             repeat="indefinite" 
             easing="linear"
@@ -56,8 +72,8 @@
         <a-ring 
           position="0 0.01 0" 
           rotation="-90 0 0" 
-          radius-inner="0.25" 
-          radius-outer="0.55"
+          radius-inner="0.35" 
+          radius-outer="0.65"
           material="color: #00eaff; opacity: 0.15; transparent: true; blending: additive"
         >
           <a-animation 
@@ -68,11 +84,54 @@
             direction="alternate" 
             repeat="indefinite"
           ></a-animation>
+          <!-- الهالة أيضاً تدور -->
+          <a-animation 
+            attribute="rotation" 
+            from="-90 0 0" 
+            to="-90 360 0" 
+            dur="10000" 
+            repeat="indefinite" 
+            easing="linear"
+          ></a-animation>
         </a-ring>
       </a-entity>
     </a-marker>
 
     <a-entity camera></a-entity>
   </a-scene>
+
+  <script>
+    // إنشاء صورة بزوايا دائرية
+    window.addEventListener('load', function() {
+      const img = document.getElementById('logoTex');
+      const canvas = document.getElementById('roundedLogo');
+      const ctx = canvas.getContext('2d');
+      
+      img.onload = function() {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        
+        const radius = 50; // نصف قطر الزوايا الدائرية
+        
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.beginPath();
+        ctx.moveTo(radius, 0);
+        ctx.lineTo(canvas.width - radius, 0);
+        ctx.quadraticCurveTo(canvas.width, 0, canvas.width, radius);
+        ctx.lineTo(canvas.width, canvas.height - radius);
+        ctx.quadraticCurveTo(canvas.width, canvas.height, canvas.width - radius, canvas.height);
+        ctx.lineTo(radius, canvas.height);
+        ctx.quadraticCurveTo(0, canvas.height, 0, canvas.height - radius);
+        ctx.lineTo(0, radius);
+        ctx.quadraticCurveTo(0, 0, radius, 0);
+        ctx.closePath();
+        ctx.clip();
+        
+        ctx.drawImage(img, 0, 0);
+      };
+      
+      if (img.complete) img.onload();
+    });
+  </script>
 </body>
 </html>

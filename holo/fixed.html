@@ -1,1 +1,56 @@
 
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Instant HUD Hologram</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.3.2/aframe/build/aframe-ar.js"></script>
+  <style>
+    body { margin:0; overflow:hidden; font-family:sans-serif }
+    #hint { position:absolute; left:10px; top:10px; z-index:5; background:rgba(0,0,0,.45);
+            color:#fff; padding:8px 10px; border-radius:6px; font-size:14px }
+  </style>
+</head>
+<body>
+  <div id="hint">الهولوجرام بيظهر فورًا أمام الكاميرا (بدون ماركر).</div>
+
+  <!-- نستخدم AR.js لعرض فيديو الكاميرا بالخلفية، لكن بدون أي marker -->
+  <a-scene embedded arjs="trackingMethod: best; debugUIEnabled: false;"
+           renderer="alpha: true; colorManagement: true; physicallyCorrectLights: true">
+
+    <a-assets timeout="10000">
+      <img id="logoTex" src="logo.png" crossorigin="anonymous" />
+    </a-assets>
+
+    <!-- الكاميرا -->
+    <a-entity camera look-controls="enabled: false">
+      <!-- مجموعة الهولوجرام مثبتة أمام الكاميرا دائماً -->
+      <a-entity id="hud" position="0 0 -1.1" rotation="0 0 0"
+                animation__float="property: position; to: 0 0.02 -1.1; dir: alternate; dur: 2200; easing: easeInOutSine; loop: true">
+
+        <!-- توهج ناعم خلف الصورة (Additive) -->
+        <a-plane width="1.2" height="1.7" position="0 0 0" scale="1.04 1.04 1"
+                 material="color:#00eaff; opacity:0.14; transparent:true; blending:additive; shader:flat">
+          <a-animation attribute="material.opacity" from="0.10" to="0.22" dur="1400" direction="alternate" repeat="indefinite"></a-animation>
+        </a-plane>
+
+        <!-- الصورة الأصلية بدون تلوين (تحافظ على ألوانها) -->
+        <a-plane width="1.2" height="1.7" position="0 0.003 0"
+                 material="src:#logoTex; shader:flat; transparent:true; alphaTest:0.01">
+        </a-plane>
+
+        <!-- خط مسح خفيف -->
+        <a-plane position="0 -0.82 0.004" width="1.2" height="0.05"
+                 material="color:#00eaff; transparent:true; opacity:0.18; blending:additive">
+          <a-animation attribute="position" from="0 -0.82 0.004" to="0 0.82 0.004"
+                       dur="1800" repeat="indefinite" easing="linear"></a-animation>
+          <a-animation attribute="material.opacity" from="0.12" to="0.28" dur="900"
+                       direction="alternate" repeat="indefinite"></a-animation>
+        </a-plane>
+      </a-entity>
+    </a-entity>
+  </a-scene>
+</body>
+</html>

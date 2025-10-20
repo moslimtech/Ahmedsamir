@@ -2,52 +2,94 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>Instant HUD Hologram</title>
+  <title>AR Vertical Hologram with Shadow</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-  <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.3.2/aframe/build/aframe-ar.js"></script>
+  <!-- A-Frame -->
+  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
   <style>
-    body { margin:0; overflow:hidden; font-family:sans-serif }
-    #hint { position:absolute; left:10px; top:10px; z-index:5; background:rgba(0,0,0,.45);
-            color:#fff; padding:8px 10px; border-radius:6px; font-size:14px }
+    /* ... (نفس الأنماط السابقة) ... */
+    body { margin: 0; overflow: hidden; }
+    #info-box { position: absolute; left: 10px; top: 10px; z-index: 5; background: rgba(0,0,0,0.5); color: white; padding: 10px; border-radius: 8px; font-family: sans-serif; font-size: 14px; }
   </style>
 </head>
 <body>
-  <div id="hint">هولوجرام أمام الكاميرا مباشرة (بدون ماركر). اضبط الأرقام لو حابب تصغير/تكبير.</div>
+  <div id="info-box">
+    <span>حرك هاتفك ببطء للتعرف على السطح، ثم اضغط على الدائرة.</span>
+  </div>
 
-  <a-scene embedded arjs="trackingMethod: best; debugUIEnabled: false;"
-           renderer="alpha: true; colorManagement: true; physicallyCorrectLights: true">
+  <a-scene
+    webxr="optionalFeatures: hit-test, dom-overlay; overlayElement: #info-box;"
+    ar-hit-test="target: #reticle; type: an"
+    renderer="colorManagement: true;"
+    shadow="type: pcfsoft"
+    cursor="rayOrigin: mouse; fuse: false">
 
     <a-assets timeout="10000">
       <img id="logoTex" src="logo.png" crossorigin="anonymous" />
     </a-assets>
 
-    <!-- كاميرا -->
-    <a-entity camera look-controls="enabled: false">
-      <!-- الهولوجرام مثبت أمام الكاميرا -->
-      <!-- ابعد/قرّب بتغيير قيمة Z (اجعلها أكثر سالبًا لتبعد) -->
-      <a-entity id="hud" position="0 0 -2.2"
-                animation__float="property: position; to: 0 0.02 -2.2; dir: alternate; dur: 2200; easing: easeInOutSine; loop: true">
+    <!-- إضاءة الشمس لإنتاج الظل -->
+    <a-light type="directional" position="1 4 2" intensity="1.5"
+             shadow-camera-top="2" shadow-camera-bottom="-2"
+             shadow-camera-left="-2" shadow-camera-right="2"
+             castShadow="true"></a-light>
+    <!-- إضاءة محيطية خفيفة لتنعيم المشهد -->
+    <a-light type="ambient" intensity="0.6"></a-light>
 
-        <!-- توهج خلفي خفيف -->
-        <a-plane width="0.60" height="0.85" position="0 0 0" scale="1.05 1.05 1"
-                 material="color:#00eaff; opacity:0.12; transparent:true; blending:additive; shader:flat">
-          <a-animation attribute="material.opacity" from="0.10" to="0.20" dur="1400" direction="alternate" repeat="indefinite"></a-animation>
-        </a-plane>
+    <a-camera position="0 1.2 0"></a-camera>
 
-        <!-- الصورة الأصلية -->
-        <a-plane width="0.60" height="0.85" position="0 0.002 0"
-                 material="src:#logoTex; shader:flat; transparent:true; alphaTest:0.01">
-        </a-plane>
-
-        <!-- خط مسح يناسب الارتفاع الجديد (0.85 => نصفه ~0.425) -->
-        <a-plane position="0 -0.42 0.004" width="0.60" height="0.03"
-                 material="color:#00eaff; transparent:true; opacity:0.16; blending:additive">
-          <a-animation attribute="position" from="0 -0.42 0.004" to="0 0.42 0.004" dur="1800" repeat="indefinite" easing="linear"></a-animation>
-          <a-animation attribute="material.opacity" from="0.10" to="0.26" dur="900" direction="alternate" repeat="indefinite"></a-animation>
-        </a-plane>
-      </a-entity>
+    <!-- مؤشر تحديد المكان -->
+    <a-entity id="reticle" scale="0.8 0.8 0.8" ar-hit-test-reticle>
+      <a-ring radius-inner="0.1" radius-outer="0.15" color="#00eaff"></a-ring>
     </a-entity>
+
+    <!-- حاوية الهولوجرامات التي ستظهر -->
+    <a-entity id="hologram-container"></a-entity>
+
+    <!-- أرضية شفافة لاستقبال الظل -->
+    <a-plane id="ground" position="0 0 0" rotation="-90 0 0" width="30" height="30"
+             ar-shadow-plane
+             material="shader: shadow; transparent: true; opacity: 0.35;">
+    </a-plane>
+
   </a-scene>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const sceneEl = document.querySelector('a-scene');
+      const hologramContainer = document.getElementById('hologram-container');
+      
+      sceneEl.addEventListener('ar-hit-test-select', (event) => {
+        const tapPosition = event.detail.position;
+
+        // إنشاء الهولوجرام العمودي
+        const hologram = document.createElement('a-entity');
+        hologram.setAttribute('position', tapPosition);
+        
+        // --- 1. جعله عموديًا ---
+        hologram.setAttribute('rotation', '-90 0 0');
+
+        // --- 2. تفعيل الظل ---
+        hologram.setAttribute('shadow', 'cast: true');
+        
+        // طبقات الهولوجرام (كما في المثال السابق ولكن مع الظل)
+        hologram.innerHTML = `
+          <!-- طبقة التوهج -->
+          <a-plane width="0.6" height="0.85" position="0 0 0" scale="1.05 1.05 1" material="color:#00eaff; opacity:0.12; transparent:true; blending:additive; shader:flat"></a-plane>
+          
+          <!-- الصورة الأصلية -->
+          <a-plane width="0.6" height="0.85" position="0 0.002 0" material="src:#logoTex; shader:flat; transparent:true; alphaTest:0.01"></a-plane>
+          
+          <!-- خط المسح -->
+          <a-plane position="0 -0.42 0.004" width="0.6" height="0.03" material="color:#00eaff; transparent:true; opacity:0.16; blending:additive">
+            <a-animation attribute="position" from="0 -0.42 0.004" to="0 0.42 0.004" dur="1800" repeat="indefinite" easing="linear"></a-animation>
+          </a-plane>
+        `;
+        
+        hologramContainer.appendChild(hologram);
+      });
+    });
+  </script>
+
 </body>
 </html>

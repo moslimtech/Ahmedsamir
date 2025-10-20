@@ -1,216 +1,174 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html>
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>AR ذكي - يتكيف مع المسافة</title>
-  
-  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.5/aframe/build/aframe-ar.js"></script>
-
+  <meta charset="utf-8" />
+  <title>Hologram Logo AR</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.3.2/aframe/build/aframe-ar.js"></script>
   <style>
-    body { margin: 0; overflow: hidden; font-family: system-ui; }
-    #instructions {
-      position: fixed;
-      top: 10px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(0,0,0,0.7);
-      color: white;
-      padding: 15px 25px;
-      border-radius: 10px;
-      text-align: center;
-      z-index: 9999;
-      font-size: 14px;
-    }
-    #distance-info {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(0,150,255,0.8);
-      color: white;
-      padding: 8px 15px;
-      border-radius: 8px;
-      font-size: 12px;
-      z-index: 9999;
-      display: none;
+    body { margin:0; overflow:hidden; }
+    #hint { 
+      position:absolute; left:10px; top:10px; z-index:5; 
+      background:rgba(0,0,0,0.45); color:white; padding:8px 10px; 
+      border-radius:6px; font-size:14px; 
     }
   </style>
 </head>
-
 <body>
-  <div id="instructions">
-    📸 وجّه الكاميرا على ماركر Hiro<br>
-    <small>جرّب تقرب وتبعد عن الماركر</small>
-  </div>
-  
-  <div id="distance-info">
-    المسافة: <span id="dist-value">--</span> متر
-  </div>
+  <div id="hint">وجّه الكاميرا على ماركر Hiro لعرض الشعار.</div>
 
-  <a-scene
-    embedded
-    arjs="sourceType: webcam; 
-          sourceWidth: 1280; 
-          sourceHeight: 960; 
-          displayWidth: 1280; 
-          displayHeight: 960;
-          debugUIEnabled: false; 
-          detectionMode: mono_and_matrix; 
-          matrixCodeType: 3x3;"
-    vr-mode-ui="enabled: false"
-    renderer="logarithmicDepthBuffer: true; precision: medium;">
+  <!-- Canvas مخفي لرسم الصورة بزوايا دائرية -->
+  <canvas id="roundedCanvas" width="256" height="384" style="display:none"></canvas>
 
+  <a-scene embedded arjs="debugUIEnabled: false;">
     <a-assets>
-      <img id="logo" src="logo.png" crossorigin="anonymous">
+      <img id="logoTex" src="" crossorigin="anonymous" />
     </a-assets>
 
-    <!-- الماركر (Hiro) -->
-    <a-marker preset="hiro" smooth="true" smoothCount="5" smoothTolerance="0.01" id="marker">
-      
-      <!-- الظل أسفل الصورة -->
-      <a-plane 
-        position="0 0.01 0" 
-        rotation="-90 0 0" 
-        width="2" 
-        height="2" 
-        material="color: #222222; opacity: 0.5; transparent: true; shader: flat">
-      </a-plane>
-
-      <!-- الصورة الرأسية مع التكيف التلقائي حسب المسافة -->
-      <a-entity 
-        id="content"
-        position="0 1.2 0"
-        distance-scale="reference: 2; min: 0.6; max: 2.5; smooth: true"
-        animation="property: rotation; to: 0 360 0; loop: true; dur: 12000; easing: linear">
+    <a-marker preset="hiro">
+      <a-entity position="0 0 0">
         
-        <!-- لوح خلفي لإعطاء عمق -->
+        <!-- مجموعة الصور الدوّارة -->
+        <a-entity id="hologramGroup" position="0 0.75 0" rotation="0 0 0">
+          <!-- صورة 1 - الأمام -->
+          <a-plane 
+            position="0 0 0.35" 
+            rotation="0 0 0" 
+            width="0.9" 
+            height="1.4"
+            material="src: #roundedCanvas; transparent: true; opacity: 0.75; alphaTest: 0.01"
+          ></a-plane>
+          
+          <!-- صورة 2 - اليمين -->
+          <a-plane 
+            position="0.35 0 0" 
+            rotation="0 90 0" 
+            width="0.9" 
+            height="1.4"
+            material="src: #roundedCanvas; transparent: true; opacity: 0.75; alphaTest: 0.01"
+          ></a-plane>
+          
+          <!-- صورة 3 - الخلف -->
+          <a-plane 
+            position="0 0 -0.35" 
+            rotation="0 180 0" 
+            width="0.9" 
+            height="1.4"
+            material="src: #roundedCanvas; transparent: true; opacity: 0.75; alphaTest: 0.01"
+          ></a-plane>
+          
+          <!-- صورة 4 - اليسار -->
+          <a-plane 
+            position="-0.35 0 0" 
+            rotation="0 270 0" 
+            width="0.9" 
+            height="1.4"
+            material="src: #roundedCanvas; transparent: true; opacity: 0.75; alphaTest: 0.01"
+          ></a-plane>
+
+          <!-- دوران تلقائي -->
+          <a-animation 
+            attribute="rotation" 
+            from="0 0 0" 
+            to="0 360 0" 
+            dur="8000" 
+            repeat="indefinite"
+            easing="linear"
+          ></a-animation>
+        </a-entity>
+
+        <!-- Scanline محسّن -->
         <a-plane 
-          position="0 0 -0.03"
+          position="0 -0.8 0" 
           width="1.2" 
-          height="1.6" 
-          material="color: #ffffff; opacity: 0.95; metalness: 0.3"
-          rounded-corners>
+          height="0.04"
+          material="color: #00eaff; transparent: true; opacity: 0.15; blending: additive"
+        >
+          <a-animation 
+            attribute="position" 
+            from="0 -0.8 0" 
+            to="0 2.2 0" 
+            dur="2400" 
+            repeat="indefinite" 
+            easing="linear"
+          ></a-animation>
         </a-plane>
 
-        <!-- الصورة الأمامية بحواف منحنية -->
-        <a-plane 
-          width="1.1" 
-          height="1.5" 
-          position="0 0 0.01"
-          src="#logo"
-          material="transparent: true; alphaTest: 0.1"
-          rounded-corners>
-        </a-plane>
+        <!-- الهالة الخارجية -->
+        <a-ring 
+          position="0 0.01 0" 
+          rotation="-90 0 0" 
+          radius-inner="0.3" 
+          radius-outer="0.65"
+          material="color: #00eaff; opacity: 0.18; transparent: true; blending: additive"
+        >
+          <a-animation 
+            attribute="material.opacity" 
+            from="0.12" 
+            to="0.25" 
+            dur="1600" 
+            direction="alternate" 
+            repeat="indefinite"
+          ></a-animation>
+        </a-ring>
+
+        <!-- هالة داخلية إضافية -->
+        <a-ring 
+          position="0 0.02 0" 
+          rotation="-90 0 0" 
+          radius-inner="0.1" 
+          radius-outer="0.25"
+          material="color: #ffffff; opacity: 0.25; transparent: true; blending: additive"
+        >
+          <a-animation 
+            attribute="material.opacity" 
+            from="0.15" 
+            to="0.35" 
+            dur="1200" 
+            direction="alternate" 
+            repeat="indefinite"
+          ></a-animation>
+        </a-ring>
 
       </a-entity>
-
     </a-marker>
 
-    <!-- الكاميرا -->
-    <a-entity camera fov="70"></a-entity>
+    <a-entity camera></a-entity>
   </a-scene>
 
   <script>
-    // ===== مكوّن التكبير التلقائي حسب المسافة =====
-    AFRAME.registerComponent('distance-scale', {
-      schema: {
-        reference: {default: 2},    // المسافة المرجعية (بالمتر)
-        min: {default: 0.5},         // أقل حجم
-        max: {default: 3},           // أكبر حجم
-        smooth: {default: true},     // حركة سلسة
-        smoothFactor: {default: 0.1} // سرعة الانتقال (أقل = أسلس)
-      },
-      
-      init: function() {
-        this.currentScale = 1;
-        this.targetScale = 1;
-        this.marker = document.querySelector('#marker');
-      },
-      
-      tick: function() {
-        // التأكد من ظهور الماركر
-        if (!this.marker.object3D.visible) return;
-        
-        const camera = this.el.sceneEl.camera;
-        if (!camera) return;
-        
-        // حساب المسافة بين الكاميرا والعنصر
-        const worldPos = new THREE.Vector3();
-        this.el.object3D.getWorldPosition(worldPos);
-        const distance = camera.position.distanceTo(worldPos);
-        
-        // عرض المسافة (اختياري - للتجربة فقط)
-        const distInfo = document.getElementById('distance-info');
-        if (distInfo) {
-          distInfo.style.display = 'block';
-          document.getElementById('dist-value').textContent = distance.toFixed(2);
-        }
-        
-        // حساب الحجم المستهدف
-        this.targetScale = distance / this.data.reference;
-        
-        // تطبيق الحدود (min/max)
-        this.targetScale = Math.max(this.data.min, Math.min(this.data.max, this.targetScale));
-        
-        // تطبيق الحركة السلسة (Lerp)
-        if (this.data.smooth) {
-          this.currentScale += (this.targetScale - this.currentScale) * this.data.smoothFactor;
-        } else {
-          this.currentScale = this.targetScale;
-        }
-        
-        // تطبيق الحجم الجديد
-        this.el.object3D.scale.set(this.currentScale, this.currentScale, this.currentScale);
-      }
-    });
+    // رسم الصورة بزوايا دائرية داخل الكانفَس
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.src = 'logo.png';
+    img.onload = () => {
+      const canvas = document.getElementById('roundedCanvas');
+      const ctx = canvas.getContext('2d');
+      const r = 24; // نصف قطر الزاوية
+      const w = canvas.width;
+      const h = canvas.height;
 
-    // ===== مكوّن الحواف المنحنية =====
-    AFRAME.registerComponent('rounded-corners', {
-      schema: { radius: {default: 0.15} },
-      init: function() {
-        this.el.addEventListener('materialtextureloaded', () => {
-          const mesh = this.el.getObject3D('mesh');
-          if (!mesh || !mesh.material.map) return;
+      ctx.clearRect(0, 0, w, h);
 
-          const canvas = document.createElement('canvas');
-          const ctx = canvas.getContext('2d');
-          const img = mesh.material.map.image;
-          
-          canvas.width = img.width;
-          canvas.height = img.height;
+      // قص مسار دائري للزوايا
+      ctx.beginPath();
+      ctx.moveTo(r, 0);
+      ctx.lineTo(w - r, 0);
+      ctx.quadraticCurveTo(w, 0, w, r);
+      ctx.lineTo(w, h - r);
+      ctx.quadraticCurveTo(w, h, w - r, h);
+      ctx.lineTo(r, h);
+      ctx.quadraticCurveTo(0, h, 0, h - r);
+      ctx.lineTo(0, r);
+      ctx.quadraticCurveTo(0, 0, r, 0);
+      ctx.closePath();
+      ctx.clip();
 
-          const r = this.data.radius * Math.min(canvas.width, canvas.height);
-          
-          ctx.beginPath();
-          ctx.moveTo(r, 0);
-          ctx.lineTo(canvas.width - r, 0);
-          ctx.arcTo(canvas.width, 0, canvas.width, r, r);
-          ctx.lineTo(canvas.width, canvas.height - r);
-          ctx.arcTo(canvas.width, canvas.height, canvas.width - r, canvas.height, r);
-          ctx.lineTo(r, canvas.height);
-          ctx.arcTo(0, canvas.height, 0, canvas.height - r, r);
-          ctx.lineTo(0, r);
-          ctx.arcTo(0, 0, r, 0, r);
-          ctx.closePath();
-          ctx.clip();
+      ctx.drawImage(img, 0, 0, w, h);
 
-          ctx.drawImage(img, 0, 0);
-
-          const texture = new THREE.CanvasTexture(canvas);
-          mesh.material.map = texture;
-          mesh.material.transparent = true;
-          mesh.material.needsUpdate = true;
-        });
-      }
-    });
-
-    // إخفاء التعليمات بعد 6 ثوانٍ
-    setTimeout(() => {
-      document.getElementById('instructions').style.opacity = '0';
-      document.getElementById('instructions').style.transition = 'opacity 1s';
-    }, 6000);
+      document.getElementById('logoTex').src = canvas.toDataURL();
+    };
   </script>
 </body>
 </html>

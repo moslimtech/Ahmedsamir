@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://moslimtech.github.io/Ahmedsamir/sitemap.xml

@@ -1,26 +1,72 @@
 <!DOCTYPE html>
-<html>
+<html lang="ar">
 <head>
   <meta charset="utf-8" />
   <title>Markerless AR — Vertical Poster + Soft Shadow</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+
   <style>
     body { margin:0; overflow:hidden; font-family:system-ui, sans-serif }
+
+    /* ✅ الـ overlay فوق كل شيء وقابل للضغط */
     #overlay {
-      position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
-      background: rgba(0,0,0,0.6); color:#fff; z-index: 5; flex-direction: column; gap: 12px;
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.7);
+      color: #fff;
+      flex-direction: column;
+      gap: 12px;
+      z-index: 9999;              /* أعلى قيمة */
+      pointer-events: auto;       /* ضروري للتفاعل */
     }
-    #startBtn { padding: 10px 16px; font-size: 16px; border-radius: 8px; border: 0; background: #00bcd4; color:#fff }
-    #msg { font-size: 14px; opacity: 0.9; text-align: center; max-width: 90% }
+
+    #startBtn {
+      padding: 12px 20px;
+      font-size: 18px;
+      border-radius: 8px;
+      border: none;
+      background: #00bcd4;
+      color: #fff;
+      cursor: pointer;
+      pointer-events: auto;       /* تأكيد إضافي */
+    }
+
+    #startBtn:active {
+      background: #0097a7;
+      transform: scale(0.97);
+    }
+
+    #msg {
+      font-size: 15px;
+      opacity: 0.9;
+      text-align: center;
+      max-width: 90%;
+      line-height: 1.5;
+    }
+
+    /* ✅ الـ A‑Frame canvas خلف overlay */
+    a-scene {
+      z-index: 1;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none; /* يخلي النقر يمرّ للزر */
+    }
   </style>
 </head>
+
 <body>
+  <!-- ✅ overlay أول حاجة -->
   <div id="overlay">
-    <div id="msg">اضغط لبدء الواقع المعزّز وتتبع السطح (بدون ماركر). حرّك الهاتف ليكتشف الأسطح.</div>
-    <button id="startBtn">ابدأ AR</button>
+    <div id="msg">اضغط لبدء الواقع المعزّز وتتبع الأسطح بدون ماركر</div>
+    <button id="startBtn">ابدأ AR</button>
   </div>
 
+  <!-- ✅ الـ scene تكون تحت overlay -->
   <a-scene
     embedded
     renderer="alpha:true; colorManagement:true; physicallyCorrectLights:true"
@@ -28,172 +74,18 @@
     webxr="optionalFeatures: hit-test, dom-overlay; overlayElement: #overlay"
     ar-hit-test
   >
-    <a-assets timeout="15000">
-      <!-- صورتك -->
-      <img id="logoTex" src="logo.png" crossorigin="anonymous" />
-      <!-- خامة ظل ناعم (SVG radial gradient كـ data URI) -->
-      <img id="shadowTex" crossorigin="anonymous"
-           src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><defs><radialGradient id='g' cx='50%25' cy='50%25' r='50%25'><stop offset='0%25' stop-color='black' stop-opacity='0.45'/><stop offset='60%25' stop-color='black' stop-opacity='0.12'/><stop offset='100%25' stop-color='black' stop-opacity='0'/></radialGradient></defs><rect width='100%25' height='100%25' fill='url(%23g)'/></svg>" />
-    </a-assets>
-
-    <!-- رتيكل (مؤشر المكان) -->
-    <a-entity id="reticle" visible="false">
-      <a-ring radius-inner="0.03" radius-outer="0.05"
-              material="color:#00eaff; opacity:0.95; transparent:true; blending:additive"
-              rotation="-90 0 0">
-      </a-ring>
-      <a-entity geometry="primitive: circle; radius: 0.006"
-                material="color:#00eaff; opacity:0.95; transparent:true; blending:additive"
-                position="0 0.001 0" rotation="-90 0 0">
-      </a-entity>
-    </a-entity>
-
-    <!-- مجموعة الوضع: تُحاذى للأرض بالـ hit-test -->
-    <a-entity id="holo" visible="false">
-      <!-- ظل واقعي ناعم على الأرض (لا يغطي الفيديو بوضوح بسبب multiply) -->
-      <a-plane id="shadow" position="0 0.001 0" rotation="-90 0 0" width="0.50" height="0.30"
-               material="src:#shadowTex; transparent:true; opacity:1; blending:multiply; shader:flat">
-      </a-plane>
-
-      <!-- اللوحة العمودية: نرفعها بنصف الارتفاع حتى تلامس الأرض -->
-      <a-entity id="panel" position="0 0.26 0">
-        <!-- توهج خفيف حول الصورة (خلف اللوحة) -->
-        <a-plane width="0.35" height="0.50" position="0 0 0" scale="1.05 1.05 1"
-                 material="color:#00eaff; opacity:0.14; transparent:true; blending:additive; shader:flat">
-          <a-animation attribute="material.opacity" from="0.10" to="0.22" dur="1400" direction="alternate" repeat="indefinite"></a-animation>
-        </a-plane>
-
-        <!-- الصورة الأصلية عمودية -->
-        <a-plane width="0.35" height="0.50" position="0 0.003 0"
-                 material="src:#logoTex; shader:flat; transparent:true; alphaTest:0.01">
-        </a-plane>
-
-        <!-- خط مسح رأسي لطيف -->
-        <a-plane position="0 -0.245 0.006" width="0.35" height="0.03"
-                 material="color:#00eaff; transparent:true; opacity:0.18; blending:additive">
-          <a-animation attribute="position" from="0 -0.245 0.006" to="0 0.245 0.006" dur="1800" repeat="indefinite" easing="linear"></a-animation>
-          <a-animation attribute="material.opacity" from="0.12" to="0.28" dur="900" direction="alternate" repeat="indefinite"></a-animation>
-        </a-plane>
-      </a-entity>
-    </a-entity>
-
-    <!-- إضاءة خفيفة (التوهج لا يعتمد عليها، بس وجودها حسن) -->
-    <a-entity light="type: ambient; intensity: 0.6"></a-entity>
-    <a-entity light="type: directional; intensity: 0.6" position="0.5 1 0.5"></a-entity>
-
-    <a-entity camera></a-entity>
+    <a-assets><img id="logoTex" src="logo.png"></a-assets>
+    <a-camera></a-camera>
   </a-scene>
 
   <script>
-    // مكوّن تتبّع السطح (WebXR Hit-Test) + وضع لوحة عمودية مع ظل
-    AFRAME.registerComponent('ar-hit-test', {
-      init: function () {
-        this.hitTestSource = null;
-        this.viewerSpace = null;
-        this.refSpace = null;
-        this.reticle = document.getElementById('reticle');
-        this.holo = document.getElementById('holo');
-        this.panel = document.getElementById('panel');
-        this.onSceneClick = this.onSceneClick.bind(this);
-
-        const sceneEl = this.el;
-        sceneEl.addEventListener('enter-vr', async () => {
-          const xr = sceneEl.renderer.xr;
-          const session = xr.getSession();
-          if (!session) return;
-
-          try {
-            this.refSpace = xr.getReferenceSpace();
-            this.viewerSpace = await session.requestReferenceSpace('viewer');
-            this.hitTestSource = await session.requestHitTestSource({ space: this.viewerSpace });
-
-            document.getElementById('overlay').style.display = 'none';
-
-            sceneEl.canvas.addEventListener('click', this.onSceneClick);
-
-            session.addEventListener('end', () => {
-              this.hitTestSource = null;
-              this.viewerSpace = null;
-              this.refSpace = null;
-              this.reticle.setAttribute('visible', false);
-              sceneEl.canvas.removeEventListener('click', this.onSceneClick);
-              document.getElementById('overlay').style.display = 'flex';
-              document.getElementById('msg').textContent = 'انتهت جلسة AR. اضغط لبدء جلسة جديدة.';
-            });
-          } catch (e) {
-            console.warn('Hit-test init failed:', e);
-            document.getElementById('msg').textContent = 'جهازك/المتصفح لا يدعم تتبّع الأسطح WebXR.';
-          }
-        });
-
-        sceneEl.addEventListener('exit-vr', () => {
-          this.hitTestSource = null;
-          this.reticle.setAttribute('visible', false);
-        });
-      },
-
-      tick: function () {
-        const sceneEl = this.el;
-        const xrFrame = sceneEl.frame;
-        if (!xrFrame || !this.hitTestSource || !this.refSpace) return;
-
-        const results = xrFrame.getHitTestResults(this.hitTestSource);
-        if (results.length > 0) {
-          const pose = results[0].getPose(this.refSpace);
-          const obj = this.reticle.object3D;
-          obj.visible = true;
-          obj.position.set(pose.transform.position.x, pose.transform.position.y, pose.transform.position.z);
-          obj.quaternion.set(
-            pose.transform.orientation.x,
-            pose.transform.orientation.y,
-            pose.transform.orientation.z,
-            pose.transform.orientation.w
-          );
-          this.reticle.setAttribute('visible', true);
-        } else {
-          this.reticle.setAttribute('visible', false);
-        }
-      },
-
-      onSceneClick: function () {
-        if (!this.reticle.getAttribute('visible')) return;
-
-        const rObj = this.reticle.object3D;
-        const holoObj = this.holo.object3D;
-        // ضع الجذر على السطح
-        holoObj.position.copy(rObj.position);
-        holoObj.quaternion.copy(rObj.quaternion);
-
-        // وجّه اللوحة لتواجه المستخدم (Yaw فقط) وقت الوضع
-        const camObj = this.el.camera.el.object3D;
-        const qw = new THREE.Quaternion();
-        camObj.getWorldQuaternion(qw);
-        const euler = new THREE.Euler().setFromQuaternion(qw, 'YXZ');
-        const yawDeg = THREE.MathUtils.radToDeg(euler.y);
-        this.panel.setAttribute('rotation', `0 ${yawDeg} 0`);
-
-        // أظهر المجموعة
-        this.holo.setAttribute('visible', true);
-      }
+    /* مجرّد مثال بسيط لاختبار الزر */
+    document.getElementById("startBtn").addEventListener("click", () => {
+      console.log("الزر اشتغل 🎯");
+      const scene = document.querySelector("a-scene");
+      scene.enterVR(); // يبدأ جلسة AR
+      document.getElementById("overlay").style.display = "none";
     });
-
-    // زر البدء
-    const start = async () => {
-      const scene = document.querySelector('a-scene');
-      try {
-        if (navigator.xr && navigator.xr.isSessionSupported) {
-          const ok = await navigator.xr.isSessionSupported('immersive-ar');
-          if (!ok) {
-            document.getElementById('msg').textContent = 'متصفحك لا يدعم AR بدون ماركر (immersive‑ar). جرّب Chrome على أندرويد أو Safari مُحدّث.';
-            return;
-          }
-        }
-        scene.enterVR();
-      } catch (e) {
-        document.getElementById('msg').textContent = 'تعذّر بدء الجلسة. تأكد من الأذونات وHTTPS.';
-      }
-    };
-    document.getElementById('startBtn').addEventListener('click', start);
   </script>
 </body>
 </html>

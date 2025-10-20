@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>AR ذكي - نسخة مبسطة</title>
+  <title>AR ذكي - محسّن للكاميرا</title>
   
   <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.5/aframe/build/aframe-ar.js"></script>
@@ -67,29 +67,38 @@
 </head>
 
 <body>
-  <!-- شاشة التحميل -->
   <div id="overlay">
     <div class="spinner"></div>
     <div id="status">جاري تحميل AR.js...</div>
   </div>
   
-  <!-- التعليمات -->
   <div id="instructions">
     📸 وجّه الكاميرا على ماركر Hiro
   </div>
 
-  <!-- المشهد - بأبسط إعدادات ممكنة -->
+  <!-- إعدادات محسّنة للكاميرا -->
   <a-scene
     embedded
-    arjs="debugUIEnabled: false;"
-    vr-mode-ui="enabled: false">
+    arjs="sourceType: webcam;
+          sourceWidth: 640;
+          sourceHeight: 480;
+          displayWidth: 640;
+          displayHeight: 480;
+          videoTexture: true;
+          debugUIEnabled: false;"
+    vr-mode-ui="enabled: false"
+    renderer="antialias: true; alpha: true; precision: medium;">
 
     <a-assets timeout="10000">
       <img id="logo" src="logo.png" crossorigin="anonymous">
     </a-assets>
 
+    <!-- إضاءة لتحسين الرؤية -->
+    <a-light type="ambient" intensity="0.8" color="#FFF"></a-light>
+    <a-light type="directional" intensity="0.5" position="1 1 1"></a-light>
+
     <!-- الماركر -->
-    <a-marker preset="hiro" id="marker">
+    <a-marker preset="hiro" id="marker" smooth="true" smoothCount="3">
       
       <!-- الظل -->
       <a-plane 
@@ -130,7 +139,8 @@
 
     </a-marker>
 
-    <a-entity camera></a-entity>
+    <!-- كاميرا بـ FOV أوسع -->
+    <a-entity camera="fov: 60"></a-entity>
   </a-scene>
 
   <script>
@@ -138,25 +148,35 @@
     const status = document.getElementById('status');
     const instructions = document.getElementById('instructions');
     
+    // ===== تحسين إعدادات الكاميرا =====
+    window.addEventListener('arjs-video-loaded', (e) => {
+      console.log('✅ Camera loaded!');
+      
+      // محاولة تحسين إعدادات الفيديو
+      const video = document.querySelector('video');
+      if (video) {
+        // إضافة سطوع وتباين أفضل
+        video.style.filter = 'brightness(1.1) contrast(1.05)';
+        console.log('Video element found and enhanced');
+      }
+    });
+    
     // ===== التحقق من HTTPS =====
     if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
-      status.innerHTML = '⚠️ <span class="error">يجب فتح الصفحة عبر HTTPS<br>أو استخدام localhost للتجربة</span>';
+      status.innerHTML = '⚠️ <span class="error">يجب فتح الصفحة عبر HTTPS</span>';
       overlay.style.background = 'rgba(200,0,0,0.95)';
     }
     
-    // ===== مراقبة تحميل AR.js =====
     window.addEventListener('load', () => {
       status.innerHTML = '📷 جاري طلب إذن الكاميرا...';
     });
     
-    // ===== عند بدء الكاميرا =====
     const scene = document.querySelector('a-scene');
     
     scene.addEventListener('loaded', () => {
       console.log('✅ A-Frame loaded');
     });
     
-    // معالجة الأخطاء
     scene.addEventListener('arjs-video-loaded', () => {
       console.log('✅ Camera started!');
       status.innerHTML = '✅ <span class="success">الكاميرا تعمل!</span>';
@@ -166,7 +186,6 @@
       }, 1500);
     });
     
-    // لو الكاميرا فشلت
     setTimeout(() => {
       if (overlay.style.display !== 'none') {
         status.innerHTML = `
@@ -174,8 +193,7 @@
           <small>تأكد من:</small><br>
           ✓ السماح بالوصول للكاميرا<br>
           ✓ الصفحة على HTTPS<br>
-          ✓ الكاميرا غير مستخدمة بتطبيق آخر<br>
-          ✓ المتصفح محدّث
+          ✓ الكاميرا غير مستخدمة بتطبيق آخر
         `;
       }
     }, 8000);

@@ -1,54 +1,78 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <title>AR Gold Glowing Image — تجربة</title>
-    <meta name="viewport" content="width=device-width, user-scalable=no" />
-    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.3.2/aframe/build/aframe-ar.js"></script>
-    <style>
-      body { margin: 0; overflow: hidden; font-family: sans-serif; }
-      #hint { position: absolute; left: 10px; top: 10px; z-index: 5; background: rgba(0,0,0,0.45); color: white; padding: 8px 10px; border-radius: 6px; font-size: 14px; }
-      #info { position: absolute; left: 10px; bottom: 10px; z-index: 5; background: rgba(0,0,0,0.45); color: white; padding: 6px 8px; border-radius: 6px; font-size: 13px; }
-    </style>
-  </head>
+<head>
+  <meta charset="utf-8" />
+  <title>Hologram Logo AR</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.3.2/aframe/build/aframe-ar.js"></script>
+  <style>
+    body { margin:0; overflow:hidden; }
+    #hint { 
+      position:absolute; left:10px; top:10px; z-index:5; 
+      background:rgba(0,0,0,0.45); color:white; padding:8px 10px; 
+      border-radius:6px; font-size:14px; 
+    }
+  </style>
+</head>
+<body>
+  <div id="hint">وجّه الكاميرا على ماركر Hiro لعرض الشعار.</div>
 
-  <body>
-    <div id="hint">وجّه الكاميرا على علامة الـ Hiro (اطبعها أو افتحها على شاشة ثانية).</div>
-    <div id="info">لو الصورة كبيرة: صغر المسافة بين الكاميرا والعلامة لتظهر بشكل أفضل.</div>
+  <a-scene embedded arjs="debugUIEnabled: false;">
+    <a-assets>
+      <img id="logoTex" src="logo.png" crossorigin="anonymous" />
+    </a-assets>
 
-    <a-scene embedded arjs="debugUIEnabled: false;">
-      <a-assets>
-        <!-- تأكد من أن ملف logo.png موجود في نفس مجلد ملف HTML هذا -->
-        <img id="logoTex" src="logo.png" crossorigin="anonymous" />
-      </a-assets>
+    <a-marker preset="hiro">
+      <!-- الهيكل الرئيسي للهولوجرام -->
+      <a-entity position="0 0 0">
+        <!-- الصورة الأصلية (بدون تغيير الألوان) -->
+        <a-plane 
+          position="0 0.75 0" 
+          rotation="-90 0 0" 
+          width="1.1" 
+          height="1.6"
+          material="src: #logoTex; shader: flat; transparent: true; alphaTest: 0.01"
+        ></a-plane>
 
-      <!-- Marker -->
-      <a-marker preset="hiro">
-        <!-- لوحة مسطحة مضيئة -->
-        <a-plane position="0 0.5 0" rotation="-90 0 0" width="1.2" height="1.6"
-                 material="src: #logoTex; side: double; transparent: true; opacity: 0.9; emissive: #ffd700; emissiveIntensity: 1.8; metalness: 0.4; roughness: 0.2">
-          
-          <!-- إضافة حركة تذبذب بسيطة للحجم -->
-          <a-animation attribute="scale"
-                         dur="3000"       <!-- مدة الحركة بالمللي ثانية -->
-                         easing="ease-in-out" <!-- نوع الحركة -->
-                         direction="alternate" <!-- تكرار الحركة ذهابًا وإيابًا -->
-                         repeat="indefinite"  <!-- تكرار لا نهائي -->
-                         from="1 1 1"     <!-- بداية الحجم -->
-                         to="1.05 1.05 1.05"> <!-- نهاية الحجم (زيادة طفيفة) -->
-          </a-animation>
+        <!-- خط مسح رأسي خفيف (Scanline) -->
+        <a-plane 
+          position="0 -0.8 0.001" 
+          width="1.1" 
+          height="0.03"
+          material="color: #00eaff; transparent: true; opacity: 0.12; blending: additive"
+        >
+          <a-animation 
+            attribute="position" 
+            from="0 -0.8 0.001" 
+            to="0 0.8 0.001" 
+            dur="2400" 
+            repeat="indefinite" 
+            easing="linear"
+          ></a-animation>
         </a-plane>
 
-        <!-- ضوء محيطي بسيط لزيادة الإحساس باللمعان -->
-        <a-entity light="type: ambient; intensity: 0.6"></a-entity>
-        <a-entity light="type: point; intensity: 0.9; distance: 3" position="0 1 1"></a-entity>
+        <!-- هالة دائرية خفيفة -->
+        <a-ring 
+          position="0 0.01 0" 
+          rotation="-90 0 0" 
+          radius-inner="0.25" 
+          radius-outer="0.55"
+          material="color: #00eaff; opacity: 0.15; transparent: true; blending: additive"
+        >
+          <a-animation 
+            attribute="material.opacity" 
+            from="0.10" 
+            to="0.22" 
+            dur="1600" 
+            direction="alternate" 
+            repeat="indefinite"
+          ></a-animation>
+        </a-ring>
+      </a-entity>
+    </a-marker>
 
-        <!-- ظل دائري خفيف -->
-        <a-ring position="0 0.01 0" rotation="-90 0 0" radius-inner="0.25" radius-outer="0.55" material="color: #000; opacity: 0.25"></a-ring>
-      </a-marker>
-
-      <a-entity camera></a-entity>
-    </a-scene>
-  </body>
+    <a-entity camera></a-entity>
+  </a-scene>
+</body>
 </html>

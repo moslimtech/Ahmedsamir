@@ -21,16 +21,17 @@
 </head>
 <body>
   <div id="overlay">
-    <div id="msg">اضغط لبدء الواقع المعزّز وتتبع السطح (بدون ماركر).</div>
+    <div id="msg">اضغط لبدء الواقع المعزّز. حرّك الهاتف ببطء للكشف عن الأسطح.</div>
     <button id="startBtn">ابدأ AR</button>
   </div>
 
+  <!-- استخدام المكوّن المدمج ar-hit-test من A-Frame -->
   <a-scene
     embedded
     renderer="alpha:true; colorManagement:true; physicallyCorrectLights:true"
     vr-mode-ui="enabled:false"
     webxr="optionalFeatures: hit-test, dom-overlay; overlayElement: #overlay"
-    ar-hit-test
+    ar-hit-test="target:#holo; enabled:true"
   >
     <a-assets timeout="15000">
       <img id="logoTex" src="logo.png" crossorigin="anonymous" />
@@ -38,25 +39,27 @@
            src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><defs><radialGradient id='g' cx='50%25' cy='50%25' r='50%25'><stop offset='0%25' stop-color='black' stop-opacity='0.45'/><stop offset='60%25' stop-color='black' stop-opacity='0.12'/><stop offset='100%25' stop-color='black' stop-opacity='0'/></radialGradient></defs><rect width='100%25' height='100%25' fill='url(%23g)'/></svg>" />
     </a-assets>
 
-    <a-entity id="reticle" visible="false">
-      <a-ring radius-inner="0.03" radius-outer="0.05"
-              material="color:#00eaff; opacity:0.95; transparent:true; blending:additive"
-              rotation="-90 0 0"></a-ring>
-      <a-entity geometry="primitive: circle; radius: 0.006"
-                material="color:#00eaff; opacity:0.95; transparent:true; blending:additive"
-                position="0 0.001 0" rotation="-90 0 0"></a-entity>
-    </a-entity>
-
+    <!-- الهولوجرام العمودي مع الظل (سيتم وضعه تلقائياً بواسطة ar-hit-test) -->
     <a-entity id="holo" visible="false">
+      <!-- ظل ناعم على الأرض -->
       <a-plane id="shadow" position="0 0.001 0" rotation="-90 0 0" width="0.50" height="0.30"
-               material="src:#shadowTex; transparent:true; opacity:1; blending:multiply; shader:flat"></a-plane>
+               material="src:#shadowTex; transparent:true; opacity:1; blending:multiply; shader:flat">
+      </a-plane>
+
+      <!-- اللوحة العمودية -->
       <a-entity id="panel" position="0 0.26 0">
+        <!-- توهج خفيف -->
         <a-plane width="0.35" height="0.50" position="0 0 0" scale="1.05 1.05 1"
                  material="color:#00eaff; opacity:0.14; transparent:true; blending:additive; shader:flat">
           <a-animation attribute="material.opacity" from="0.10" to="0.22" dur="1400" direction="alternate" repeat="indefinite"></a-animation>
         </a-plane>
+
+        <!-- الصورة الأصلية -->
         <a-plane width="0.35" height="0.50" position="0 0.003 0"
-                 material="src:#logoTex; shader:flat; transparent:true; alphaTest:0.01"></a-plane>
+                 material="src:#logoTex; shader:flat; transparent:true; alphaTest:0.01">
+        </a-plane>
+
+        <!-- خط المسح -->
         <a-plane position="0 -0.245 0.006" width="0.35" height="0.03"
                  material="color:#00eaff; transparent:true; opacity:0.18; blending:additive">
           <a-animation attribute="position" from="0 -0.245 0.006" to="0 0.245 0.006" dur="1800" repeat="indefinite" easing="linear"></a-animation>
@@ -71,127 +74,64 @@
   </a-scene>
 
   <script>
-    AFRAME.registerComponent('ar-hit-test', {
-      init: function () {
-        this.hitTestSource = null;
-        this.viewerSpace = null;
-        this.refSpace = null;
-        this.reticle = document.getElementById('reticle');
-        this.holo = document.getElementById('holo');
-        this.panel = document.getElementById('panel');
-        this.onSceneClick = this.onSceneClick.bind(this);
+    const sceneEl = document.querySelector('a-scene');
+    const msg = document.getElementById('msg');
+    const btn = document.getElementById('startBtn');
+    const overlay = document.getElementById('overlay');
 
-        const sceneEl = this.el;
-        sceneEl.addEventListener('enter-vr', async () => {
-          const xr = sceneEl.renderer.xr;
-          const session = xr.getSession();
-          if (!session) return;
+    // استماع لأحداث ar-hit-test المدمجة
+    sceneEl.addEventListener('enter-vr', function () {
+      if (this.is('ar-mode')) {
+        msg.textContent = 'جارِ المسح...';
 
-          try {
-            this.refSpace = xr.getReferenceSpace();
-            this.viewerSpace = await session.requestReferenceSpace('viewer');
-            this.hitTestSource = await session.requestHitTestSource({ space: this.viewerSpace });
+        // عند بدء المسح
+        this.addEventListener('ar-hit-test-start', function () {
+          msg.textContent = 'جارِ الكشف عن الأسطح. حرّك الهاتف ببطء.';
+        }, { once: true });
 
-            document.getElementById('overlay').style.display = 'none';
-            sceneEl.canvas.addEventListener('click', this.onSceneClick);
+        // عند إيجاد سطح
+        this.addEventListener('ar-hit-test-achieved', function () {
+          msg.textContent = 'اضغط على الشاشة لوضع الهولوجرام.';
+        }, { once: true });
 
-            session.addEventListener('end', () => {
-              this.hitTestSource = null;
-              this.viewerSpace = null;
-              this.refSpace = null;
-              this.reticle.setAttribute('visible', false);
-              sceneEl.canvas.removeEventListener('click', this.onSceneClick);
-              document.getElementById('overlay').style.display = 'flex';
-              document.getElementById('msg').textContent = 'انتهت جلسة AR. اضغط لبدء جلسة جديدة.';
-            });
-          } catch (e) {
-            console.error('Hit-test error:', e);
-            document.getElementById('overlay').style.display = 'flex';
-            document.getElementById('msg').textContent = 'جهازك لا يدعم تتبّع الأسطح. جرّب Chrome على أندرويد حديث.';
-          }
-        });
-      },
-
-      tick: function () {
-        const sceneEl = this.el;
-        const xrFrame = sceneEl.frame;
-        if (!xrFrame || !this.hitTestSource || !this.refSpace) return;
-
-        const results = xrFrame.getHitTestResults(this.hitTestSource);
-        if (results.length > 0) {
-          const pose = results.getPose(this.refSpace);
-          const obj = this.reticle.object3D;
-          obj.visible = true;
-          obj.position.set(pose.transform.position.x, pose.transform.position.y, pose.transform.position.z);
-          obj.quaternion.set(
-            pose.transform.orientation.x,
-            pose.transform.orientation.y,
-            pose.transform.orientation.z,
-            pose.transform.orientation.w
-          );
-          this.reticle.setAttribute('visible', true);
-        } else {
-          this.reticle.setAttribute('visible', false);
-        }
-      },
-
-      onSceneClick: function () {
-        if (!this.reticle.getAttribute('visible')) return;
-        const rObj = this.reticle.object3D;
-        const holoObj = this.holo.object3D;
-        holoObj.position.copy(rObj.position);
-        holoObj.quaternion.copy(rObj.quaternion);
-
-        const camObj = this.el.camera.el.object3D;
-        const qw = new THREE.Quaternion();
-        camObj.getWorldQuaternion(qw);
-        const euler = new THREE.Euler().setFromQuaternion(qw, 'YXZ');
-        const yawDeg = THREE.MathUtils.radToDeg(euler.y);
-        this.panel.setAttribute('rotation', `0 ${yawDeg} 0`);
-
-        this.holo.setAttribute('visible', true);
+        // عند وضع الكائن
+        this.addEventListener('ar-hit-test-select', function () {
+          msg.textContent = 'تم! اضغط مرة أخرى لإعادة الوضع.';
+          // يمكنك تعطيل ar-hit-test بعد الوضع الأول إذا أردت
+          // sceneEl.setAttribute('ar-hit-test', 'enabled', false);
+        }, { once: false });
       }
     });
 
-    // === الكود المُصحّح لزر البدء ===
-    document.getElementById('startBtn').addEventListener('click', async () => {
-      const scene = document.querySelector('a-scene');
-      const msg = document.getElementById('msg');
-      const btn = document.getElementById('startBtn');
-
+    // زر البدء
+    btn.addEventListener('click', async () => {
       try {
-        // التحقق من دعم WebXR بشكل صحيح
         if (!navigator.xr) {
-          msg.textContent = '❌ متصفحك لا يدعم WebXR. استخدم Chrome على أندرويد أو Safari iOS 17.4+';
+          msg.textContent = '❌ متصفحك لا يدعم WebXR.';
           return;
         }
 
-        // التحقق من دعم immersive-ar (الطريقة الصحيحة)
         const supported = await navigator.xr.isSessionSupported('immersive-ar');
         if (!supported) {
-          msg.textContent = '❌ جهازك/متصفحك لا يدعم AR بدون ماركر. تحتاج Chrome 90+ على أندرويد أو جهاز ARCore.';
+          msg.textContent = '❌ جهازك لا يدعم AR. استخدم Chrome على أندرويد حديث.';
           return;
         }
 
-        // تعطيل الزر مؤقتاً أثناء البدء
         btn.disabled = true;
         btn.textContent = 'جارِ البدء...';
-        msg.textContent = 'يُرجى السماح بالوصول للكاميرا.';
-
-        // بدء الجلسة
-        await scene.enterVR();
+        await sceneEl.enterVR();
 
       } catch (error) {
-        console.error('Session error:', error);
+        console.error('Error:', error);
         btn.disabled = false;
         btn.textContent = 'ابدأ AR';
         
         if (error.name === 'NotAllowedError') {
-          msg.textContent = '❌ تم رفض إذن الكاميرا. اسمح بالوصول وأعد المحاولة.';
+          msg.textContent = '❌ تم رفض إذن الكاميرا.';
         } else if (error.name === 'SecurityError') {
-          msg.textContent = '❌ يجب فتح الصفحة عبر HTTPS أو localhost.';
+          msg.textContent = '❌ يجب استخدام HTTPS.';
         } else {
-          msg.textContent = `❌ خطأ: ${error.message || 'تعذر بدء AR'}`;
+          msg.textContent = `❌ خطأ: ${error.message}`;
         }
       }
     });

@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>Hologram Logo AR - Cube</title>
+  <title>Hologram Logo AR - Cube Stable</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.3.2/aframe/build/aframe-ar.js"></script>
@@ -18,19 +18,18 @@
 <body>
   <div id="hint">وجّه الكاميرا على ماركر Hiro لعرض الشعار.</div>
 
-  <!-- Canvas مخفي لرسم الصورة بزوايا دائرية -->
   <canvas id="roundedCanvas" width="256" height="384" style="display:none"></canvas>
 
-  <a-scene embedded arjs="debugUIEnabled: false;">
+  <a-scene embedded arjs="debugUIEnabled: false; trackingMethod: best;">
     <a-assets>
       <img id="logoTex" src="" crossorigin="anonymous" />
     </a-assets>
 
-    <a-marker preset="hiro">
+    <a-marker preset="hiro" smooth="true" smoothCount="10" smoothTolerance="0.01" smoothThreshold="5">
       <a-entity position="0 0 0">
         
-        <!-- مجموعة المكعب الدوّار -->
-        <a-entity id="hologramCube" position="0 0.75 0" rotation="0 0 0">
+        <!-- مجموعة المكعب الدوّار - دوران واحد مستقر -->
+        <a-entity id="hologramCube" position="0 0.75 0">
           
           <!-- الوجه 1 - الأمام -->
           <a-plane 
@@ -38,7 +37,7 @@
             rotation="0 0 0" 
             width="0.9" 
             height="0.9"
-            material="src: #roundedCanvas; transparent: true; opacity: 0.8; alphaTest: 0.01"
+            material="src: #roundedCanvas; transparent: true; opacity: 0.85; alphaTest: 0.01; side: double"
           ></a-plane>
           
           <!-- الوجه 2 - الخلف -->
@@ -47,7 +46,7 @@
             rotation="0 180 0" 
             width="0.9" 
             height="0.9"
-            material="src: #roundedCanvas; transparent: true; opacity: 0.8; alphaTest: 0.01"
+            material="src: #roundedCanvas; transparent: true; opacity: 0.85; alphaTest: 0.01; side: double"
           ></a-plane>
           
           <!-- الوجه 3 - اليمين -->
@@ -56,7 +55,7 @@
             rotation="0 90 0" 
             width="0.9" 
             height="0.9"
-            material="src: #roundedCanvas; transparent: true; opacity: 0.8; alphaTest: 0.01"
+            material="src: #roundedCanvas; transparent: true; opacity: 0.85; alphaTest: 0.01; side: double"
           ></a-plane>
           
           <!-- الوجه 4 - اليسار -->
@@ -65,7 +64,7 @@
             rotation="0 -90 0" 
             width="0.9" 
             height="0.9"
-            material="src: #roundedCanvas; transparent: true; opacity: 0.8; alphaTest: 0.01"
+            material="src: #roundedCanvas; transparent: true; opacity: 0.85; alphaTest: 0.01; side: double"
           ></a-plane>
           
           <!-- الوجه 5 - الأعلى -->
@@ -74,7 +73,7 @@
             rotation="-90 0 0" 
             width="0.9" 
             height="0.9"
-            material="src: #roundedCanvas; transparent: true; opacity: 0.8; alphaTest: 0.01"
+            material="src: #roundedCanvas; transparent: true; opacity: 0.85; alphaTest: 0.01; side: double"
           ></a-plane>
           
           <!-- الوجه 6 - الأسفل -->
@@ -83,25 +82,15 @@
             rotation="90 0 0" 
             width="0.9" 
             height="0.9"
-            material="src: #roundedCanvas; transparent: true; opacity: 0.8; alphaTest: 0.01"
+            material="src: #roundedCanvas; transparent: true; opacity: 0.85; alphaTest: 0.01; side: double"
           ></a-plane>
 
-          <!-- دوران ثلاثي الأبعاد -->
+          <!-- دوران واحد مستقر على محور Y فقط -->
           <a-animation 
             attribute="rotation" 
             from="0 0 0" 
             to="0 360 0" 
-            dur="10000" 
-            repeat="indefinite"
-            easing="linear"
-          ></a-animation>
-          
-          <!-- دوران إضافي على المحور X -->
-          <a-animation 
-            attribute="rotation" 
-            from="0 0 0" 
-            to="360 0 0" 
-            dur="15000" 
+            dur="12000" 
             repeat="indefinite"
             easing="linear"
           ></a-animation>
@@ -140,15 +129,6 @@
             direction="alternate" 
             repeat="indefinite"
           ></a-animation>
-          
-          <a-animation 
-            attribute="rotation" 
-            from="-90 0 0" 
-            to="-90 360 0" 
-            dur="12000" 
-            repeat="indefinite"
-            easing="linear"
-          ></a-animation>
         </a-ring>
 
         <!-- هالة داخلية إضافية -->
@@ -166,15 +146,6 @@
             dur="1200" 
             direction="alternate" 
             repeat="indefinite"
-          ></a-animation>
-          
-          <a-animation 
-            attribute="rotation" 
-            from="-90 0 0" 
-            to="-90 -360 0" 
-            dur="8000" 
-            repeat="indefinite"
-            easing="linear"
           ></a-animation>
         </a-ring>
 
@@ -202,20 +173,26 @@
   </a-scene>
 
   <script>
-    // رسم الصورة بزوايا دائرية داخل الكانفَس
+    // Component لتثبيت الحركة
+    AFRAME.registerComponent('smooth-transform', {
+      init: function () {
+        this.el.object3D.matrixAutoUpdate = true;
+      }
+    });
+
+    // رسم الصورة بزوايا دائرية
     const img = new Image();
     img.crossOrigin = 'anonymous';
     img.src = 'logo.png';
     img.onload = () => {
       const canvas = document.getElementById('roundedCanvas');
       const ctx = canvas.getContext('2d');
-      const r = 24; // نصف قطر الزاوية
+      const r = 24;
       const w = canvas.width;
       const h = canvas.height;
 
       ctx.clearRect(0, 0, w, h);
 
-      // قص مسار دائري للزوايا
       ctx.beginPath();
       ctx.moveTo(r, 0);
       ctx.lineTo(w - r, 0);

@@ -26,7 +26,7 @@
 <body>
   <div id="overlay">
     <div>اضغط لتفعيل الواقع المعزّز باستخدام الموبايل فقط 📱</div>
-    <button id="startBtn">ابدأ AR</button>
+    <button id="startBtn">ابدأ AR</button>
   </div>
 
   <a-scene embedded vr-mode-ui="enabled:false"
@@ -106,9 +106,7 @@
         if(navigator.xr && await navigator.xr.isSessionSupported('immersive-ar')){
           scene.enterVR();
         }else{
-          document.getElementById('overlay').innerText=
-          '⚠️ المتصفح لا يدعم AR بدون ماركر.
-جرّب Chrome على Android أو Safari حديث.';
+          document.getElementById('overlay').innerText='⚠️ المتصفح لا يدعم AR بدون ماركر. جرّب Chrome على Android أو Safari حديث.';
         }
       }catch(e){
         document.getElementById('overlay').innerText='حدث خطأ أثناء بدء AR.';

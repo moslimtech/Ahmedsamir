@@ -2,9 +2,10 @@
 <html lang="ar">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>AR بدون ماركر</title>
   <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+
   <style>
     body{margin:0;overflow:hidden;font-family:system-ui}
     #overlay{
@@ -24,15 +25,13 @@
     }
   </style>
 </head>
-<body>
 
-  <!-- غطاء البداية -->
+<body>
   <div id="overlay">
-    <div>اضغط لتفعيل الواقع المعزّز<br>باستخدام كاميرا الموبايل فقط 📱</div>
+    <div>اضغط لتفعيل الواقع المعزّز<br>بالموبايل فقط 📱</div>
     <button id="startBtn">ابدأ AR</button>
   </div>
 
-  <!-- مشهد A‑Frame (WebXR Hit‑Test) -->
   <a-scene
     embedded
     vr-mode-ui="enabled:false"
@@ -40,100 +39,95 @@
     webxr="optionalFeatures: hit-test, dom-overlay; overlayElement:#overlay"
     markerless-ar
   >
-    <a-assets>
-      <img id="img" src="https://cdn.glitch.global/24f58a91-cb9e-4b14-bcf4-4b287b683d8d/logo.png?v=1683648107000">
-      <img id="shadow" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><defs><radialGradient id='g'><stop offset='0%' stop-color='black' stop-opacity='0.4'/><stop offset='70%' stop-color='black' stop-opacity='0.1'/><stop offset='100%' stop-color='black' stop-opacity='0'/></radialGradient></defs><rect width='100%' height='100%' fill='url(%23g)'/></svg>">
+    <a-assets timeout="10000">
+      <!-- 👇 استخدم صورة محلية “logo.png” في نفس المجلد -->
+      <img id="img" src="logo.png" crossorigin="anonymous">
+
+      <!-- 👇 ملف ظل SVG بسيط في نفس المجلد -->
+      <img id="shadow" src="shadow.svg" crossorigin="anonymous">
     </a-assets>
 
-    <!-- مؤشر موضع السطح -->
+    <!-- الحلقة الزرقاء -->
     <a-ring id="reticle" visible="false"
             radius-inner="0.03" radius-outer="0.05"
             material="color:#00eaff;opacity:0.9;transparent:true;blending:additive"
             rotation="-90 0 0">
     </a-ring>
 
-    <!-- مجسّم يُضاف عند تحديد السطح -->
+    <!-- العنصر الذي سيظهر -->
     <a-entity id="model" visible="false">
-      <!-- ظل ناعم -->
       <a-plane src="#shadow" rotation="-90 0 0" width="0.4" height="0.25"
                material="transparent:true;opacity:0.9;blending:multiply"></a-plane>
-
-      <!-- الصورة الهولوجرافية العمودية -->
       <a-plane src="#img" height="0.5" width="0.35" position="0 0.25 0"
-               rotation="0 0 0"
                material="transparent:true;shader:flat"></a-plane>
     </a-entity>
 
     <a-camera></a-camera>
   </a-scene>
 
+  <!-- ✅ مكوّن التتبع -->
   <script>
-    /*************  مكوّن تتبّع السطح  *************/
     AFRAME.registerComponent('markerless-ar', {
       init: function () {
-        const sceneEl = this.el;
-        const reticle = document.getElementById('reticle');
-        const model = document.getElementById('model');
-        let hitTestSource=null, viewerSpace=null, refSpace=null;
+        const sceneEl=this.el,
+              reticle=document.getElementById('reticle'),
+              model=document.getElementById('model');
+        let hitSource=null,viewerSpace=null,refSpace=null;
 
         sceneEl.addEventListener('enter-vr', async()=>{
           const session=sceneEl.renderer.xr.getSession();
           try{
             refSpace=sceneEl.renderer.xr.getReferenceSpace();
             viewerSpace=await session.requestReferenceSpace('viewer');
-            hitTestSource=await session.requestHitTestSource({space:viewerSpace});
+            hitSource=await session.requestHitTestSource({space:viewerSpace});
             document.getElementById('overlay').style.display='none';
+
             sceneEl.canvas.addEventListener('click',()=>{
               if(!reticle.getAttribute('visible'))return;
               model.object3D.position.copy(reticle.object3D.position);
               model.object3D.quaternion.copy(reticle.object3D.quaternion);
               model.setAttribute('visible',true);
             });
+
             session.addEventListener('end',()=>{
-              hitTestSource=null;reticle.setAttribute('visible',false);
+              hitSource=null;
+              reticle.setAttribute('visible',false);
               document.getElementById('overlay').style.display='flex';
             });
-          }catch(err){
+          }catch(e){
             document.getElementById('overlay').innerText=
-              '⚠️ جهازك أو المتصفح لا يدعم WebXR Hit‑Test.';
-            console.error(err);
+              '⚠️ متصفحك أو الجهاز لا يدعم WebXR Hit‑Test.';
+            console.error(e);
           }
-          // التحديث في كل إطار
-          sceneEl.renderer.xr.addEventListener('sessionstart',()=>sceneEl.addEventListener('tick',()=>{
+
+          sceneEl.addEventListener('tick',()=>{
             const frame=sceneEl.frame;
-            if(!frame||!hitTestSource||!refSpace)return;
-            const hits=frame.getHitTestResults(hitTestSource);
+            if(!frame||!hitSource||!refSpace)return;
+            const hits=frame.getHitTestResults(hitSource);
             if(hits.length>0){
               const pose=hits[0].getPose(refSpace);
               const p=reticle.object3D;
-              p.visible=true;
-              p.position.set(pose.transform.position.x,pose.transform.position.y,pose.transform.position.z);
-              p.quaternion.set(
-                pose.transform.orientation.x,
-                pose.transform.orientation.y,
-                pose.transform.orientation.z,
-                pose.transform.orientation.w
-              );
+              p.position.set(pose.transform.position.x, pose.transform.position.y, pose.transform.position.z);
+              p.quaternion.set(pose.transform.orientation.x, pose.transform.orientation.y, pose.transform.orientation.z, pose.transform.orientation.w);
               reticle.setAttribute('visible',true);
             } else reticle.setAttribute('visible',false);
-          }));
+          });
         });
       }
     });
 
-    /*************  زر البدء  *************/
-    document.getElementById('startBtn').addEventListener('click', async ()=>{
+    document.getElementById('startBtn').addEventListener('click', async()=>{
       const scene=document.querySelector('a-scene');
       try{
         if(navigator.xr && await navigator.xr.isSessionSupported('immersive-ar')){
           scene.enterVR();
-        }else{
+        } else {
           document.getElementById('overlay').innerText=
             '⚠️ المتصفح لا يدعم AR بدون ماركر.
 جرّب Chrome على Android أو Safari حديث.';
         }
       }catch(e){
-        document.getElementById('overlay').innerText='حدث خطأ أثناء بدء جلسة AR.';
+        document.getElementById('overlay').innerText='حدث خطأ أثناء بدء الجلسة.';
         console.error(e);
       }
     });

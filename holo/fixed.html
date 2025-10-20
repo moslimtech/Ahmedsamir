@@ -2,188 +2,134 @@
 <html lang="ar">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>AR بدون ماركر</title>
-
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>AR بماركر - صورة ثلاثية الأبعاد دوارة</title>
+  
   <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.5/aframe/build/aframe-ar.js"></script>
 
   <style>
-    body {
-      margin: 0;
-      overflow: hidden;
-      font-family: system-ui;
-    }
-
-    #overlay {
+    body { margin: 0; overflow: hidden; font-family: system-ui; }
+    #instructions {
       position: fixed;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      background: rgba(0,0,0,.7);
-      color: #fff;
-      z-index: 9999;
-      pointer-events: auto;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.7);
+      color: white;
+      padding: 15px 25px;
+      border-radius: 10px;
       text-align: center;
-    }
-
-    #startBtn {
-      margin-top: 12px;
-      padding: 12px 22px;
-      font-size: 17px;
-      background: #00bcd4;
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      pointer-events: auto;
-    }
-
-    a-scene {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      z-index: 1;
-      pointer-events: none;
+      z-index: 9999;
+      font-size: 14px;
     }
   </style>
 </head>
 
 <body>
-  <!-- غطاء البداية -->
-  <div id="overlay">
-    <div>اضغط لتفعيل الواقع المعزّز باستخدام الموبايل فقط 📱</div>
-    <button id="startBtn">ابدأ AR</button>
+  <div id="instructions">
+    📸 وجّه الكاميرا على ماركر Hiro
   </div>
 
-  <!-- مشهد الواقع المعزز -->
   <a-scene
     embedded
-    vr-mode-ui="enabled:false"
-    renderer="alpha:true;colorManagement:true;physicallyCorrectLights:true"
-    webxr="optionalFeatures: hit-test, dom-overlay; overlayElement:#overlay"
-    markerless-ar>
+    arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;"
+    vr-mode-ui="enabled: false"
+    renderer="logarithmicDepthBuffer: true; precision: medium;">
 
-    <a-assets timeout="10000">
-      <!-- الصورة والهالة -->
-      <img id="img" src="logo.png" crossorigin="anonymous">
-      <img id="shadow" src="shadow.svg" crossorigin="anonymous">
+    <a-assets>
+      <img id="logo" src="logo.png" crossorigin="anonymous">
     </a-assets>
 
-    <!-- المؤشر الزرق -->
-    <a-ring id="reticle"
-            visible="false"
-            radius-inner="0.03"
-            radius-outer="0.05"
-            material="color:#00eaff;opacity:0.9;transparent:true;blending:additive"
-            rotation="-90 0 0">
-    </a-ring>
-
-    <!-- النموذج -->
-    <a-entity id="model" visible="false">
-      <a-plane src="#shadow"
-               rotation="-90 0 0"
-               width="0.5" height="0.3"
-               material="transparent:true;blending:multiply;opacity:0.9">
+    <!-- الماركر (Hiro) -->
+    <a-marker preset="hiro" smooth="true" smoothCount="5" smoothTolerance="0.01">
+      
+      <!-- الظل أسفل الصورة -->
+      <a-plane 
+        position="0 0.01 0" 
+        rotation="-90 0 0" 
+        width="2" 
+        height="2" 
+        material="color: #222222; opacity: 0.5; transparent: true; shader: flat">
       </a-plane>
 
-      <a-plane src="#img"
-               width="0.35" height="0.5"
-               position="0 0.25 0"
-               material="transparent:true;shader:flat">
-      </a-plane>
-    </a-entity>
+      <!-- الصورة الرأسية ثلاثية الأبعاد مع دوران بطيء -->
+      <a-entity 
+        position="0 1.2 0"
+        animation="property: rotation; to: 0 360 0; loop: true; dur: 12000; easing: linear">
+        
+        <!-- لوح خلفي لإعطاء عمق -->
+        <a-plane 
+          position="0 0 -0.03"
+          width="1.2" 
+          height="1.6" 
+          material="color: #ffffff; opacity: 0.95; metalness: 0.3"
+          rounded-corners>
+        </a-plane>
 
-    <a-camera></a-camera>
+        <!-- الصورة الأمامية بحواف منحنية -->
+        <a-plane 
+          width="1.1" 
+          height="1.5" 
+          position="0 0 0.01"
+          src="#logo"
+          material="transparent: true; alphaTest: 0.1"
+          rounded-corners>
+        </a-plane>
+
+      </a-entity>
+
+    </a-marker>
+
+    <a-entity camera></a-entity>
   </a-scene>
 
   <script>
-    // ===== مكوّن تتبّع السطح =====
-    AFRAME.registerComponent('markerless-ar', {
-      init: function () {
-        const scene = this.el;
-        const reticle = document.getElementById('reticle');
-        const model = document.getElementById('model');
+    // مكوّن الحواف المنحنية
+    AFRAME.registerComponent('rounded-corners', {
+      schema: { radius: {default: 0.15} },
+      init: function() {
+        this.el.addEventListener('materialtextureloaded', () => {
+          const mesh = this.el.getObject3D('mesh');
+          if (!mesh || !mesh.material.map) return;
 
-        let hitSrc = null, viewer = null, ref = null;
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          const img = mesh.material.map.image;
+          
+          canvas.width = img.width;
+          canvas.height = img.height;
 
-        scene.addEventListener('enter-vr', async () => {
-          const session = scene.renderer.xr.getSession();
+          const r = this.data.radius * Math.min(canvas.width, canvas.height);
+          
+          ctx.beginPath();
+          ctx.moveTo(r, 0);
+          ctx.lineTo(canvas.width - r, 0);
+          ctx.arcTo(canvas.width, 0, canvas.width, r, r);
+          ctx.lineTo(canvas.width, canvas.height - r);
+          ctx.arcTo(canvas.width, canvas.height, canvas.width - r, canvas.height, r);
+          ctx.lineTo(r, canvas.height);
+          ctx.arcTo(0, canvas.height, 0, canvas.height - r, r);
+          ctx.lineTo(0, r);
+          ctx.arcTo(0, 0, r, 0, r);
+          ctx.closePath();
+          ctx.clip();
 
-          try {
-            ref = scene.renderer.xr.getReferenceSpace();
-            viewer = await session.requestReferenceSpace('viewer');
-            hitSrc = await session.requestHitTestSource({ space: viewer });
+          ctx.drawImage(img, 0, 0);
 
-            document.getElementById('overlay').style.display = 'none';
-
-            // عند الضغط على الشاشة، ضع النموذج في موضع المؤشر
-            scene.canvas.addEventListener('click', () => {
-              if (!reticle.getAttribute('visible')) return;
-
-              model.object3D.position.copy(reticle.object3D.position);
-              model.object3D.quaternion.copy(reticle.object3D.quaternion);
-              model.setAttribute('visible', true);
-            });
-
-            session.addEventListener('end', () => {
-              hitSrc = null;
-              reticle.setAttribute('visible', false);
-              document.getElementById('overlay').style.display = 'flex';
-            });
-
-          } catch (e) {
-            document.getElementById('overlay').innerText =
-              '⚠️ جهازك أو المتصفح لا يدعم WebXR Hit‑Test.';
-            console.error(e);
-          }
-
-          // التحديث في كل فريم
-          scene.addEventListener('tick', () => {
-            const f = scene.frame;
-            if (!f || !hitSrc || !ref) return;
-
-            const hits = f.getHitTestResults(hitSrc);
-            if (hits.length) {
-              const pose = hits[0].getPose(ref);
-              const o = reticle.object3D;
-              o.position.set(
-                pose.transform.position.x,
-                pose.transform.position.y,
-                pose.transform.position.z
-              );
-              o.quaternion.set(
-                pose.transform.orientation.x,
-                pose.transform.orientation.y,
-                pose.transform.orientation.z,
-                pose.transform.orientation.w
-              );
-              reticle.setAttribute('visible', true);
-            } else {
-              reticle.setAttribute('visible', false);
-            }
-          });
+          const texture = new THREE.CanvasTexture(canvas);
+          mesh.material.map = texture;
+          mesh.material.transparent = true;
+          mesh.material.needsUpdate = true;
         });
       }
     });
 
-    // ===== الزر =====
-    document.getElementById('startBtn').addEventListener('click', async () => {
-      const scene = document.querySelector('a-scene');
-      try {
-        if (navigator.xr && await navigator.xr.isSessionSupported('immersive-ar')) {
-          scene.enterVR();
-        } else {
-          document.getElementById('overlay').innerText ="لا يدعم";
- 
-  
-        }
-      } catch (e) {
-        document.getElementById('overlay').innerText = 'حدث خطأ أثناء بدء AR.';
-        console.error(e);
-      }
-    });
+    // إخفاء التعليمات بعد 5 ثوانٍ
+    setTimeout(() => {
+      document.getElementById('instructions').style.opacity = '0';
+      document.getElementById('instructions').style.transition = 'opacity 1s';
+    }, 5000);
   </script>
 </body>
 </html>

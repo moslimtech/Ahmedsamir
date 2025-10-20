@@ -11,7 +11,7 @@
     #hint { 
       position:absolute; left:10px; top:10px; z-index:5; 
       background:rgba(0,0,0,0.45); color:white; padding:8px 10px; 
-      border-radius:6px; font-size:14px;
+      border-radius:6px; font-size:14px; 
     }
   </style>
 </head>
@@ -28,7 +28,6 @@
     <a-marker preset="hiro" smooth="true" smoothCount="10" smoothTolerance="0.01" smoothThreshold="5">
       <a-entity position="0 0 0">
         
-        <!-- مجموعة المكعب الدوّار - دوران واحد مستقر -->
         <a-entity id="hologramCube" position="0 0.75 0">
           
           <!-- الوجه 1 - الأمام -->
@@ -85,11 +84,16 @@
             material="src: #roundedCanvas; transparent: true; opacity: 0.85; alphaTest: 0.01; side: double"
           ></a-plane>
 
-          <!-- دوران واحد مستقر على محور Y فقط -->
-          
+          <a-animation 
+            attribute="rotation" 
+            from="0 0 0" 
+            to="0 360 0" 
+            dur="12000" 
+            repeat="indefinite"
+            easing="linear"
+          ></a-animation>
         </a-entity>
 
-        <!-- Scanline محسّن -->
         <a-plane 
           position="0 -0.8 0" 
           width="1.4" 
@@ -106,7 +110,6 @@
           ></a-animation>
         </a-plane>
 
-        <!-- الهالة الخارجية -->
         <a-ring 
           position="0 0.01 0" 
           rotation="-90 0 0" 
@@ -124,7 +127,6 @@
           ></a-animation>
         </a-ring>
 
-        <!-- هالة داخلية إضافية -->
         <a-ring 
           position="0 0.02 0" 
           rotation="-90 0 0" 
@@ -142,21 +144,13 @@
           ></a-animation>
         </a-ring>
 
-        <!-- خطوط طاقة دائرية -->
         <a-torus 
           position="0 0.75 0" 
           radius="0.6" 
           radius-tubular="0.01"
           material="color: #00eaff; opacity: 0.3; transparent: true; blending: additive"
         >
-          <a-animation 
-            attribute="rotation" 
-            from="0 0 0" 
-            to="0 360 0" 
-            dur="5000" 
-            repeat="indefinite"
-            easing="linear"
-          ></a-animation>
+          
         </a-torus>
 
       </a-entity>
@@ -166,10 +160,33 @@
   </a-scene>
 
   <script>
-    // Component لتثبيت الحركة
-    AFRAME.registerComponent('smooth-transform', {
-      init: function () {
-        this.el.object3D.matrixAutoUpdate = true;
+    // 🔋 منع إطفاء الشاشة
+    let wakeLock = null;
+
+    async function requestWakeLock() {
+      try {
+        if ('wakeLock' in navigator) {
+          wakeLock = await navigator.wakeLock.request('screen');
+          console.log('✅ تم تفعيل إبقاء الشاشة مضاءة');
+          
+          wakeLock.addEventListener('release', () => {
+            console.log('⚠️ تم إيقاف إبقاء الشاشة');
+          });
+        } else {
+          console.warn('⚠️ المتصفح لا يدعم Wake Lock API');
+        }
+      } catch (err) {
+        console.error('❌ خطأ في تفعيل Wake Lock:', err);
+      }
+    }
+
+    // تفعيل عند تحميل الصفحة
+    document.addEventListener('DOMContentLoaded', requestWakeLock);
+
+    // إعادة التفعيل عند العودة للتطبيق
+    document.addEventListener('visibilitychange', () => {
+      if (wakeLock !== null && document.visibilityState === 'visible') {
+        requestWakeLock();
       }
     });
 

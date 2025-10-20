@@ -2,134 +2,59 @@
 <html lang="ar">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>AR بماركر - صورة ثلاثية الأبعاد دوارة</title>
-  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AR بصورة منحنية ثلاثية الأبعاد</title>
+
+  <!-- مكتبات A‑Frame وAR.js -->
   <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.5/aframe/build/aframe-ar.js"></script>
+  <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/3.3.2/aframe/build/aframe-ar.js"></script>
 
   <style>
-    body { margin: 0; overflow: hidden; font-family: system-ui; }
-    #instructions {
-      position: fixed;
-      top: 10px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(0,0,0,0.7);
-      color: white;
-      padding: 15px 25px;
-      border-radius: 10px;
-      text-align: center;
-      z-index: 9999;
-      font-size: 14px;
+    body { margin:0; overflow:hidden; text-align:center; }
+    #hint {
+      position:fixed; bottom:10px; width:100%;
+      color:white; font-size:1.1em; text-shadow:0 0 5px black;
     }
   </style>
 </head>
 
 <body>
-  <div id="instructions">
-    📸 وجّه الكاميرا على ماركر Hiro
-  </div>
+  <div id="hint">وجّه الكاميرا نحو الماركر (HIRO)</div>
 
-  <a-scene
-    embedded
-    arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;"
-    vr-mode-ui="enabled: false"
-    renderer="logarithmicDepthBuffer: true; precision: medium;">
+  <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;">
+    <!-- إضاءة بسيطة + إضاءة ناعمة -->
+    <a-light type="directional" position="0 1 1" intensity="0.8"></a-light>
+    <a-light type="ambient" color="#666"></a-light>
 
-    <a-assets>
-      <img id="logo" src="logo.png" crossorigin="anonymous">
-    </a-assets>
+    <!-- الماركر -->
+    <a-marker preset="hiro">
+      <!-- ظل خفيف أسفل الصورة -->
+      <a-plane rotation="-90 0 0" width="1" height="1"
+               material="color:#000;opacity:0.3;transparent:true"
+               position="0 0 0"></a-plane>
 
-    <!-- الماركر (Hiro) -->
-    <a-marker preset="hiro" smooth="true" smoothCount="5" smoothTolerance="0.01">
-      
-      <!-- الظل أسفل الصورة -->
-      <a-plane 
-        position="0 0.01 0" 
-        rotation="-90 0 0" 
-        width="2" 
-        height="2" 
-        material="color: #222222; opacity: 0.5; transparent: true; shader: flat">
-      </a-plane>
+      <!-- اللوحة المنحنية -->
+      <a-entity rotation="0 0 0" animation="property: rotation; to: 0 360 0; loop: true; dur: 10000; easing: linear">
+        <a-curvedimage 
+          src="image.jpg"
+          radius="1.5"
+          theta-length="60"
+          height="1"
+          position="0 0.6 0"
+          material="shader: flat; side: double;"
+          geometry="radius:1.5;thetaLength:60;height:1;"
+          scale="1 1 1"
+        ></a-curvedimage>
 
-      <!-- الصورة الرأسية ثلاثية الأبعاد مع دوران بطيء -->
-      <a-entity 
-        position="0 1.2 0"
-        animation="property: rotation; to: 0 360 0; loop: true; dur: 12000; easing: linear">
-        
-        <!-- لوح خلفي لإعطاء عمق -->
-        <a-plane 
-          position="0 0 -0.03"
-          width="1.2" 
-          height="1.6" 
-          material="color: #ffffff; opacity: 0.95; metalness: 0.3"
-          rounded-corners>
-        </a-plane>
-
-        <!-- الصورة الأمامية بحواف منحنية -->
-        <a-plane 
-          width="1.1" 
-          height="1.5" 
-          position="0 0 0.01"
-          src="#logo"
-          material="transparent: true; alphaTest: 0.1"
-          rounded-corners>
-        </a-plane>
-
+        <!-- حواف منحنية وزجاجية -->
+        <a-cylinder radius="0.51" height="1" theta-length="60"
+                    material="color:#fff; opacity:0.15; transparent:true"
+                    position="0 0.6 0">
+        </a-cylinder>
       </a-entity>
-
     </a-marker>
 
     <a-entity camera></a-entity>
   </a-scene>
-
-  <script>
-    // مكوّن الحواف المنحنية
-    AFRAME.registerComponent('rounded-corners', {
-      schema: { radius: {default: 0.15} },
-      init: function() {
-        this.el.addEventListener('materialtextureloaded', () => {
-          const mesh = this.el.getObject3D('mesh');
-          if (!mesh || !mesh.material.map) return;
-
-          const canvas = document.createElement('canvas');
-          const ctx = canvas.getContext('2d');
-          const img = mesh.material.map.image;
-          
-          canvas.width = img.width;
-          canvas.height = img.height;
-
-          const r = this.data.radius * Math.min(canvas.width, canvas.height);
-          
-          ctx.beginPath();
-          ctx.moveTo(r, 0);
-          ctx.lineTo(canvas.width - r, 0);
-          ctx.arcTo(canvas.width, 0, canvas.width, r, r);
-          ctx.lineTo(canvas.width, canvas.height - r);
-          ctx.arcTo(canvas.width, canvas.height, canvas.width - r, canvas.height, r);
-          ctx.lineTo(r, canvas.height);
-          ctx.arcTo(0, canvas.height, 0, canvas.height - r, r);
-          ctx.lineTo(0, r);
-          ctx.arcTo(0, 0, r, 0, r);
-          ctx.closePath();
-          ctx.clip();
-
-          ctx.drawImage(img, 0, 0);
-
-          const texture = new THREE.CanvasTexture(canvas);
-          mesh.material.map = texture;
-          mesh.material.transparent = true;
-          mesh.material.needsUpdate = true;
-        });
-      }
-    });
-
-    // إخفاء التعليمات بعد 5 ثوانٍ
-    setTimeout(() => {
-      document.getElementById('instructions').style.opacity = '0';
-      document.getElementById('instructions').style.transition = 'opacity 1s';
-    }, 5000);
-  </script>
 </body>
 </html>

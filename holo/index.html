@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>AR Gold Glowing Image — تجربة</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.3.2/aframe/build/aframe-ar.js"></script>
+    <style>
+      body { margin: 0; overflow: hidden; font-family: sans-serif; }
+      #hint { position: absolute; left: 10px; top: 10px; z-index: 5; background: rgba(0,0,0,0.45); color: white; padding: 8px 10px; border-radius: 6px; font-size: 14px; }
+      #info { position: absolute; left: 10px; bottom: 10px; z-index: 5; background: rgba(0,0,0,0.45); color: white; padding: 6px 8px; border-radius: 6px; font-size: 13px; }
+    </style>
+  </head>
+
+  <body>
+    <div id="hint">وجّه الكاميرا على علامة الـ Hiro (اطبعها أو افتحها على شاشة ثانية).</div>
+    <div id="info">لو الصورة كبيرة: صغر المسافة بين الكاميرا والعلامة لتظهر بشكل أفضل.</div>
+
+    <a-scene embedded arjs="debugUIEnabled: false;">
+      <a-assets>
+        <img id="logoTex" src="logo.png" crossorigin="anonymous" />
+      </a-assets>
+
+      <!-- Marker -->
+      <a-marker preset="hiro">
+        <!-- لوحة مسطحة مضيئة -->
+        <a-plane position="0 0.5 0" rotation="-90 0 0" width="1.2" height="1.6"
+                 material="src: #logoTex; side: double; transparent: true; opacity: 1; emissive: #ffd700; emissiveIntensity: 1.8; metalness: 0.4; roughness: 0.2">
+        </a-plane>
+
+        <!-- ضوء محيطي بسيط لزيادة الإحساس باللمعان -->
+        <a-entity light="type: ambient; intensity: 0.6"></a-entity>
+        <a-entity light="type: point; intensity: 0.9; distance: 3" position="0 1 1"></a-entity>
+
+        <!-- ظل دائري خفيف -->
+        <a-ring position="0 0.01 0" rotation="-90 0 0" radius-inner="0.25" radius-outer="0.55" material="color: #000; opacity: 0.25"></a-ring>
+      </a-marker>
+
+      <a-entity camera></a-entity>
+    </a-scene>
+  </body>
+</html>

@@ -175,10 +175,7 @@
         if (navigator.xr && await navigator.xr.isSessionSupported('immersive-ar')) {
           scene.enterVR();
         } else {
-          // ✅ استخدم 
- بدل السطر الحقيقي
-          document.getElementById('overlay').innerText =
-            '⚠️ المتصفح لا يدعم AR بدون ماركر.
+document.getElementById('overlay').innerText = '⚠️ المتصفح لا يدعم AR بدون ماركر.
 جرّب Chrome على Android أو Safari حديث.';
         }
       } catch (e) {

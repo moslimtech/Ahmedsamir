@@ -768,157 +768,191 @@
     }
 
     /* Responsive Design */
-    @media (max-width: 768px) {
-      .cube-wrapper {
-        width: 320px;
-        height: 320px;
-      }
+   /* Responsive Design - محسّن للكيوب المستطيل */
+@media (max-width: 768px) {
+  header {
+    padding: 60px 15px 40px;
+  }
 
-      .cube-face {
-        width: 320px;
-        height: 320px;
-      }
-      
-      h1 {
-        font-size: 2.5rem;
-      }
-      
-      h2 {
-        font-size: 1.2rem;
-      }
-      
-      .slogan {
-        font-size: 1.1rem;
-        padding: 0 20px;
-      }
-      
-      .buttons {
-        flex-direction: column;
-        align-items: center;
-        gap: 15px;
-      }
-      
-      .btn {
-        width: 100%;
-        max-width: 280px;
-      }
+  .cube-wrapper {
+    width: 240px;    /* ← عرض أصغر */
+    height: 360px;   /* ← ارتفاع أكبر - نسبة 2:3 */
+  }
 
-      .section-title {
-        font-size: 1.8rem;
-      }
+  .cube-face {
+    width: 240px;
+    height: 360px;
+    border-radius: 15px; /* ← تقليل الـ radius للموبايل */
+  }
+  
+  .cube-face img {
+    border-radius: 12px;
+  }
+  
+  h1 {
+    font-size: 2.5rem;
+  }
+  
+  h2 {
+    font-size: 1.2rem;
+  }
+  
+  .slogan {
+    font-size: 1.1rem;
+    padding: 0 20px;
+  }
+  
+  .buttons {
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  .btn {
+    width: 100%;
+    max-width: 280px;
+  }
 
-      .videos-container {
-        grid-template-columns: 1fr;
-        gap: 20px;
-      }
+  .section-title {
+    font-size: 1.8rem;
+  }
 
-      .video-item iframe {
-        height: 220px;
-      }
+  .videos-container {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
 
-      .gallery-container {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 15px;
-      }
+  .video-item iframe {
+    height: 220px;
+  }
 
-      .gallery-item img {
-        height: 180px;
-      }
+  .gallery-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
 
-      .popup {
-        width: 98%;
-        height: 85vh;
-        padding: 10px;
-      }
+  .gallery-item img {
+    height: 180px;
+  }
 
-      .popup-header {
-        padding: 8px 10px;
-      }
+  .popup {
+    width: 98%;
+    height: 85vh;
+    padding: 10px;
+  }
 
-      .popup-title {
-        font-size: 0.95rem;
-      }
+  .popup-header {
+    padding: 8px 10px;
+  }
 
-      .map-container {
-        height: 280px;
-      }
-      
-      .map-buttons {
-        flex-direction: column;
-        align-items: center;
-      }
-      
-      .map-btn {
-        width: 100%;
-        max-width: 280px;
-      }
+  .popup-title {
+    font-size: 0.95rem;
+  }
 
-      .qr-section, .countdown-section, .location-section {
-        margin-top: 30px;
-        padding: 20px;
-      }
+  .map-container {
+    height: 280px;
+  }
+  
+  .map-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .map-btn {
+    width: 100%;
+    max-width: 280px;
+  }
 
-      .countdown-timer {
-        gap: 10px;
-      }
+  .qr-section, .countdown-section, .location-section {
+    margin-top: 30px;
+    padding: 20px;
+  }
 
-      .time-unit {
-        min-width: 60px;
-        padding: 10px 12px;
-      }
+  .countdown-timer {
+    gap: 10px;
+  }
 
-      .time-value {
-        font-size: 1.5rem;
-      }
+  .time-unit {
+    min-width: 60px;
+    padding: 10px 12px;
+  }
+
+  .time-value {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  header {
+    padding: 50px 10px 30px;
+  }
+
+  .cube-wrapper {
+    width: 200px;    /* ← عرض أصغر */
+    height: 300px;   /* ← ارتفاع أكبر - نسبة 2:3 */
+  }
+
+  .cube-face {
+    width: 200px;
+    height: 300px;
+    border-radius: 12px;
+    border-width: 2px; /* ← تقليل الحدود للموبايل */
+  }
+  
+  .cube-face img {
+    border-radius: 10px;
+  }
+  
+  h1 {
+    font-size: 2rem;
+    letter-spacing: 1px;
+  }
+  
+  h2 {
+    font-size: 1rem;
+  }
+  
+  .slogan {
+    font-size: 1rem;
+    padding: 0 15px;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+  }
+
+  .gallery-container {
+    grid-template-columns: 1fr;
+  }
+
+  .time-unit {
+    min-width: 55px;
+    padding: 8px 10px;
+  }
+
+  .time-value {
+    font-size: 1.3rem;
+  }
+
+  .close-btn {
+    width: 30px;
+    height: 30px;
+    font-size: 18px;
+  }
+
+  /* تحسين للشاشات الصغيرة جدًا */
+  @media (max-width: 360px) {
+    .cube-wrapper {
+      width: 180px;
+      height: 270px;
     }
-
-    @media (max-width: 480px) {
-      header {
-        padding: 60px 15px 40px;
-      }
-
-      .cube-wrapper {
-        width: 280px;
-        height: 280px;
-      }
-
-      .cube-face {
-        width: 280px;
-        height: 280px;
-      }
-      
-      h1 {
-        font-size: 2rem;
-        letter-spacing: 1px;
-      }
-      
-      .slogan {
-        font-size: 1rem;
-      }
-
-      .section-title {
-        font-size: 1.5rem;
-      }
-
-      .gallery-container {
-        grid-template-columns: 1fr;
-      }
-
-      .time-unit {
-        min-width: 55px;
-        padding: 8px 10px;
-      }
-
-      .time-value {
-        font-size: 1.3rem;
-      }
-
-      .close-btn {
-        width: 30px;
-        height: 30px;
-        font-size: 18px;
-      }
+    
+    .cube-face {
+      width: 180px;
+      height: 270px;
     }
+  }
+}
   </style>
 </head>
 

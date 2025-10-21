@@ -3,38 +3,30 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>الأستاذ الدكتور أحمد سمير | Dr Ahmed Samir</title>
+  <title>تعرف علي الأستاذ الدكتور / أحمد سمير | Dr Ahmed Samir</title>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
-  <!-- ✅ SEO Meta Tags - مخفية تماماً -->
-  <meta name="description" content="أحمد سمير - مرشح مجلس إدارة نادي الزهور رقم 1. البرنامج الانتخابي الكامل، الرؤية والأهداف لتطوير النادي وخدمة الأعضاء.">
+  <!-- ✅ SEO Meta Data (invisible to visitors) -->
+<meta name="description" content=" الأستاذ الدكتور أحمد سمير - مرشح مجلس إدارة نادي الزهور رقم (1). تعرف على الرؤية والبرنامج الانتخابي لتطوير النادي وخدمة الأعضاء.">
+<meta name="keywords" content="أحمد سمير, احمد سمير, نادي الزهور, انتخابات نادي الزهور, مجلس ادارة نادي الزهور, مرشح نادي الزهور,الأستاذ الدكتور أحمد سمير,الاستاذ الدكتور احمد سمير,الدكتور احمد سمير, د احمد سمير, Ahmed Samir, El Zohour Club">
+<meta name="author" content="Dr. Ahmed Samir">
+<meta name="robots" content="index, follow">
+
+<!-- Social Media Metadata -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="الأستاذ الدكتور أحمد سمير - مرشح نادي الزهور">
+<meta property="og:description" content="البرنامج الانتخابي الكامل للدكتور أحمد سمير - مرشح مجلس إدارة نادي الزهور رقم (1)">
+<meta property="og:image" content="https://moslimtech.github.io/Ahmedsamir/photo1.jpg">
+<meta property="og:url" content="https://moslimtech.github.io/Ahmedsamir/">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="د. أحمد سمير - مرشح نادي الزهور">
+<meta name="twitter:description" content="رؤية لتطوير نادي الزهور الرياضي - البرنامج الانتخابي 2025">
+<meta name="twitter:image" content="https://moslimtech.github.io/Ahmedsamir/photo1.jpg">
+
+<link rel="canonical" href="https://moslimtech.github.io/Ahmedsamir/">
+
   
-  <meta name="keywords" content="أحمد سمير, احمد سمير, نادي الزهور, انتخابات نادي الزهور, مجلس ادارة نادي الزهور, مرشح نادي الزهور, الدكتور احمد سمير, د احمد سمير, Ahmed Samir, El Zohour Club, انتخابات النادي, البرنامج الانتخابي, نادي الزهور الرياضي, مرشح رقم 1, الزهور, انتخابات 2025, مرشح مجلس الادارة">
   
-  <meta name="author" content="Dr. Ahmed Samir">
-  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
-  <meta name="language" content="ar">
-  <meta name="geo.region" content="EG">
-  <meta name="geo.placename" content="Cairo">
-  
-  <!-- Open Graph للفيسبوك وواتساب -->
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="الأستاذ الدكتور أحمد سمير - مرشح نادي الزهور رقم 1">
-  <meta property="og:description" content="البرنامج الانتخابي الكامل للدكتور أحمد سمير - مرشح مجلس إدارة نادي الزهور. رؤية وأهداف لتطوير النادي وخدمة الأعضاء.">
-  <meta property="og:image" content="https://moslimtech.github.io/Ahmedsamir/photo1.jpg">
-  <meta property="og:url" content="https://moslimtech.github.io/Ahmedsamir/">
-  <meta property="og:site_name" content="أحمد سمير - نادي الزهور">
-  <meta property="og:locale" content="ar_EG">
-  
-  <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="د. أحمد سمير - مرشح نادي الزهور">
-  <meta name="twitter:description" content="البرنامج الانتخابي الكامل - رؤية وأهداف لتطوير نادي الزهور">
-  <meta name="twitter:image" content="https://moslimtech.github.io/Ahmedsamir/photo1.jpg">
-  
-  <!-- Canonical URL -->
-  <link rel="canonical" href="https://moslimtech.github.io/Ahmedsamir/">
-  
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
   <style>
     * {
       margin: 0;
@@ -59,42 +51,47 @@
       text-align: center;
     }
 
-    /* Simple 3D Cube Container */
+    /* Single Rotating Cube - خفيف */
     .cube-container {
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 40px;
-      perspective: 1000px;
-      flex-wrap: wrap;
+      perspective: 1200px;
       margin-bottom: 40px;
+      position: relative;
     }
 
     .cube-wrapper {
       position: relative;
+      width: 400px;
+      height: 800px;
       transform-style: preserve-3d;
-      transition: transform 0.5s ease;
-      cursor: pointer;
-    }
-
-    .cube-wrapper:hover {
-      transform: rotateY(15deg) scale(1.05);
     }
 
     .cube {
       position: relative;
+      width: 100%;
+      height: 100%;
       transform-style: preserve-3d;
-      animation: rotateHorizontal 15s infinite linear;
+      animation: gentleRotate 20s infinite ease-in-out;
     }
 
     .cube-face {
       position: absolute;
-      border-radius: 15px;
+      width: 400px;
+      height: 800px;
+      border-radius: 20px;
       overflow: hidden;
       background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      border: 2px solid rgba(255, 255, 255, 0.3);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(15px);
+      border: 3px solid rgba(255, 255, 255, 0.4);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+    }
+
+    .cube-face.active {
+      opacity: 1;
     }
 
     .cube-face img {
@@ -102,12 +99,27 @@
       height: 100%;
       object-fit: cover;
       display: block;
-      border-radius: 13px;
+      border-radius: 17px;
     }
 
-    @keyframes rotateHorizontal {
-      0% { transform: rotateY(0deg); }
-      100% { transform: rotateY(360deg); }
+    /* حركة دوران خفيفة جداً */
+    @keyframes gentleRotate {
+      0%, 100% {
+        transform: rotateY(0deg) rotateX(0deg);
+      }
+      25% {
+        transform: rotateY(5deg) rotateX(-2deg);
+      }
+      50% {
+        transform: rotateY(0deg) rotateX(2deg);
+      }
+      75% {
+        transform: rotateY(-5deg) rotateX(-2deg);
+      }
+    }
+
+    .cube-wrapper:hover .cube {
+      animation-play-state: paused;
     }
 
     /* Name styling */
@@ -757,8 +769,14 @@
 
     /* Responsive Design */
     @media (max-width: 768px) {
-      .cube-container {
-        gap: 20px;
+      .cube-wrapper {
+        width: 320px;
+        height: 320px;
+      }
+
+      .cube-face {
+        width: 320px;
+        height: 320px;
       }
       
       h1 {
@@ -858,6 +876,16 @@
       header {
         padding: 60px 15px 40px;
       }
+
+      .cube-wrapper {
+        width: 280px;
+        height: 280px;
+      }
+
+      .cube-face {
+        width: 280px;
+        height: 280px;
+      }
       
       h1 {
         font-size: 2rem;
@@ -897,49 +925,35 @@
 <body>
   <header>
     <div class="cube-container">
-      <!-- First Cube -->
-      <div class="cube-wrapper" id="cube1">
+      <!-- Single Cube with image switching -->
+      <div class="cube-wrapper">
         <div class="cube">
-          <div class="cube-face front">
-            <img src="photo1.jpg" alt="صورة أحمد سمير 1" />
+          <div class="cube-face active" id="face1">
+            <img src="photo1.jpg" alt="صورة أحمد سمير" />
           </div>
-          <div class="cube-face back"></div>
-          <div class="cube-face right"></div>
-          <div class="cube-face left"></div>
-          <div class="cube-face top"></div>
-          <div class="cube-face bottom"></div>
-        </div>
-      </div>
-
-      <!-- Second Cube -->
-      <div class="cube-wrapper" id="cube2">
-        <div class="cube">
-          <div class="cube-face front">
-            <img src="photo2.jpg" alt="صورة أحمد سمير 2" />
+          <div class="cube-face" id="face2">
+            <img src="photo2.jpg" alt="صورة أحمد سمير" />
           </div>
-          <div class="cube-face back"></div>
-          <div class="cube-face right"></div>
-          <div class="cube-face left"></div>
-          <div class="cube-face top"></div>
-          <div class="cube-face bottom"></div>
         </div>
       </div>
     </div>
 
     <div class="name-container">
-      <h1>الأستاذ الدكتور احمد سمير</h1>
+      <h2>تعرف علي</h2>
+      <h2>الأستاذ الدكتور</h2>
+      <h1>أحمد سمير</h1>
       <h2>DR Ahmed Samir</h2>
     </div>
 
     <div class="buttons">
       <a href="https://wa.me/201005183071" target="_blank" class="btn whatsapp">
-        📱 تواصل عبر واتساب
+        تواصل عبر واتساب
       </a>
       <a href="https://m.facebook.com/ahmd.smyr.523979/" target="_blank" class="btn facebook">
-        💙 صفحة فيسبوك
+        صفحة فيسبوك
       </a>
       <button class="btn" onclick="openPopup()">
-        📄 عرض البرنامج الانتخابي
+        عرض البرنامج الانتخابي
       </button>
     </div>
   </header>
@@ -953,7 +967,7 @@
         <iframe 
           src="https://www.youtube.com/embed/RVsmwV-a4pw" 
           allowfullscreen
-          title="فيديو البرنامج الانتخابي">
+          title="">
         </iframe>
         <p class="video-caption">البرنامج الانتخابي الكامل</p>
       </div>
@@ -961,7 +975,7 @@
         <iframe 
           src="https://www.youtube.com/embed/tYMG-ZnPZN8" 
           allowfullscreen
-          title="كلمة المرشح">
+          title="">
         </iframe>
         <p class="video-caption">كلمة أحمد سمير للناخبين</p>
       </div>
@@ -969,7 +983,7 @@
         <iframe 
           src="https://www.youtube.com/embed/N1NtWAD6uAA" 
           allowfullscreen
-          title="رؤية المستقبل">
+          title="">
         </iframe>
         <p class="video-caption">رؤيتنا للمستقبل</p>
       </div>
@@ -998,35 +1012,63 @@
           </div>
         </div>
         <div class="gallery-item" onclick="openImagePopup('5.jpg')">
-          <img src="5.jpg" alt="صورة البرنامج 4">
+          <img src="5.jpg" alt="صورة البرنامج 5">
           <div class="gallery-item-overlay">
             <span>🔍</span>
           </div>
         </div>
         <div class="gallery-item" onclick="openImagePopup('6.jpg')">
-          <img src="6.jpg" alt="صورة البرنامج 5">
+          <img src="6.jpg" alt="صورة البرنامج 6">
           <div class="gallery-item-overlay">
             <span>🔍</span>
           </div>
         </div>
         <div class="gallery-item" onclick="openImagePopup('7.jpg')">
-          <img src="7.jpg" alt="صورة البرنامج 6">
+          <img src="7.jpg" alt="صورة البرنامج 7">
           <div class="gallery-item-overlay">
             <span>🔍</span>
           </div>
         </div>
-        <div class="gallery-item" onclick="openImagePopup('8.jpg')">
-          <img src="8.jpg" alt="صورة البرنامج 7">
+      
+        <div class="gallery-item" onclick="openImagePopup('13.jpg')">
+          <img src="13.jpg" alt="صورة البرنامج 13">
           <div class="gallery-item-overlay">
             <span>🔍</span>
           </div>
         </div>
-        <div class="gallery-item" onclick="openImagePopup('9.jpg')">
-          <img src="9.jpg" alt="صورة البرنامج 8">
+
+        <div class="gallery-item" onclick="openImagePopup('14.jpg')">
+          <img src="14.jpg" alt="صورة البرنامج 14">
           <div class="gallery-item-overlay">
             <span>🔍</span>
           </div>
         </div>
+
+
+        <div class="gallery-item" onclick="openImagePopup('15.jpg')">
+          <img src="15.jpg" alt="صورة البرنامج 8">
+          <div class="gallery-item-overlay">
+            <span>🔍</span>
+          </div>
+        </div>
+
+
+        <div class="gallery-item" onclick="openImagePopup('16.jpg')">
+          <img src="16.jpg" alt="صورة البرنامج 8">
+          <div class="gallery-item-overlay">
+            <span>🔍</span>
+          </div>
+        </div>
+
+
+        <div class="gallery-item" onclick="openImagePopup('17.jpg')">
+          <img src="17.jpg" alt="صورة البرنامج 8">
+          <div class="gallery-item-overlay">
+            <span>🔍</span>
+          </div>
+        </div>
+
+        
         <div class="gallery-item" onclick="openImagePopup('10.jpg')">
           <img src="10.jpg" alt="صورة البرنامج 9">
           <div class="gallery-item-overlay">
@@ -1106,7 +1148,7 @@
     </div>
   </div>
 
-  <!-- PDF Popup - محسّن -->
+  <!-- PDF Popup -->
   <div class="overlay" id="overlay">
     <div class="popup">
       <div class="popup-header">
@@ -1148,53 +1190,27 @@
   <script>
     // الرابط المراد مشاركته
     const shareURL = 'https://moslimtech.github.io/Ahmedsamir/';
-    const shareText = 'تعرف علي الاستاذ الدكتور احمد سمير - المرشح علي مقعد عضوية مجلس ادارة نادي الزهور رقم(1)';
+    const shareText = 'تعرف علي الأستاذ الدكتور أحمد سمير المرشح علي مقعد عضوية مجلس ادارة نادي الزهور رقم(1)';
 
-    // Adapt cube to image size
-    function adaptCubeToImage(cubeId, imageSrc) {
-      const img = new Image();
-      const cubeWrapper = document.getElementById(cubeId);
-      const cube = cubeWrapper.querySelector('.cube');
-      const faces = cube.querySelectorAll('.cube-face');
+    // Image switching for single cube
+    let currentImage = 1;
+    function switchImage() {
+      const face1 = document.getElementById('face1');
+      const face2 = document.getElementById('face2');
       
-      img.onload = function() {
-        const maxSize = Math.min(window.innerWidth * 0.35, 280);
-        const minSize = 200;
-        
-        let size;
-        const aspectRatio = img.naturalWidth / img.naturalHeight;
-        
-        if (aspectRatio > 1.3) {
-          size = Math.min(img.naturalWidth * 0.3, maxSize);
-        } else if (aspectRatio < 0.7) {
-          size = Math.min(img.naturalHeight * 0.3, maxSize);
-        } else {
-          size = Math.min(Math.max(img.naturalWidth, img.naturalHeight) * 0.35, maxSize);
-        }
-        
-        size = Math.max(size, minSize);
-        const halfSize = size / 2;
-        
-        cubeWrapper.style.width = size + 'px';
-        cubeWrapper.style.height = size + 'px';
-        cube.style.width = size + 'px';
-        cube.style.height = size + 'px';
-        
-        faces.forEach(face => {
-          face.style.width = size + 'px';
-          face.style.height = size + 'px';
-        });
-        
-        faces[0].style.transform = `rotateY(0deg) translateZ(${halfSize}px)`;
-        faces[1].style.transform = `rotateY(180deg) translateZ(${halfSize}px)`;
-        faces[2].style.transform = `rotateY(90deg) translateZ(${halfSize}px)`;
-        faces[3].style.transform = `rotateY(-90deg) translateZ(${halfSize}px)`;
-        faces[4].style.transform = `rotateX(90deg) translateZ(${halfSize}px)`;
-        faces[5].style.transform = `rotateX(-90deg) translateZ(${halfSize}px)`;
-      };
-      
-      img.src = imageSrc;
+      if (currentImage === 1) {
+        face1.classList.remove('active');
+        face2.classList.add('active');
+        currentImage = 2;
+      } else {
+        face2.classList.remove('active');
+        face1.classList.add('active');
+        currentImage = 1;
+      }
     }
+
+    // Switch images every 4 seconds
+    setInterval(switchImage, 4000);
 
     // Generate QR Code
     function generateQR() {
@@ -1239,7 +1255,7 @@
       }
     });
 
-    // PDF Popup functions - محسّنة
+    // PDF Popup functions
     function openPopup() {
       const overlay = document.getElementById("overlay");
       const pdfFrame = document.getElementById("pdfFrame");
@@ -1248,7 +1264,6 @@
       overlay.style.display = "flex";
       document.body.style.overflow = "hidden";
       
-      // التحقق من إمكانية عرض PDF
       pdfFrame.onload = function() {
         console.log('PDF loaded successfully');
       };
@@ -1351,17 +1366,32 @@
 
     // Initialize on load
     window.addEventListener('load', function() {
-      adaptCubeToImage('cube1', 'photo1.jpg');
-      adaptCubeToImage('cube2', 'photo2.jpg');
       generateQR();
       setupShareLinks();
       startCountdown();
     });
-
-    window.addEventListener('resize', function() {
-      adaptCubeToImage('cube1', 'photo1.jpg');
-      adaptCubeToImage('cube2', 'photo2.jpg');
-    });
   </script>
+
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "أحمد سمير",
+  "alternateName": "Ahmed Samir",
+  "jobTitle": "أستاذ دكتور",
+  "description": "مرشح مجلس إدارة نادي الزهور رقم 1 - البرنامج الانتخابي الكامل",
+  "url": "https://moslimtech.github.io/Ahmedsamir/",
+  "image": "https://moslimtech.github.io/Ahmedsamir/photo1.jpg",
+  "sameAs": [
+    "https://m.facebook.com/ahmd.smyr.523979/"
+  ],
+  "memberOf": {
+    "@type": "Organization",
+    "name": "نادي الزهور الرياضي"
+  }
+}
+</script>
+
+  
 </body>
 </html>

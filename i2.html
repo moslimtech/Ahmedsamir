@@ -52,7 +52,7 @@
     }
 
     /* Single Rotating Cube - خفيف */
-    /* Single Rotating Cube - حركة ديناميكية */
+     /* Single Rotating Cube - أبعاد أكبر للموبايلات */
 .cube-container {
   display: flex;
   justify-content: center;
@@ -60,6 +60,7 @@
   perspective: 1200px;
   margin-bottom: 40px;
   position: relative;
+  width: 100%;
 }
 
 .cube-wrapper {
@@ -68,6 +69,7 @@
   height: 420px;
   transform-style: preserve-3d;
   transition: transform 0.3s ease;
+  max-width: 100%;
 }
 
 .cube {
@@ -108,7 +110,7 @@
   transition: transform 0.3s ease;
 }
 
-/* حركة دوران أكثر ديناميكية */
+/* حركة دوران ديناميكية */
 @keyframes gentleRotate {
   0%, 100% {
     transform: rotateY(0deg) rotateX(0deg);
@@ -143,20 +145,32 @@
 }
 
 .cube-wrapper:hover .cube-face.active img {
-  transform: scale(1.05); /* ← تكبير الصورة قليلاً */
+  transform: scale(1.05);
 }
 
-/* Responsive للموبايل */
+/* Responsive - أبعاد أكبر للموبايلات */
 @media (max-width: 768px) {
+  .cube-container {
+    perspective: 800px;
+  }
+  
   .cube-wrapper {
-    width: 240px;
-    height: 360px;
+    width: min(280px, 85vw);
+    height: min(420px, 1.5 * 85vw);
   }
   
   .cube-face {
-    width: 240px;
-    height: 360px;
+    width: inherit;
+    height: inherit;
     border-radius: 15px;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4);
+    border-width: 2.5px;
+  }
+  
+  .cube-face.active {
+    box-shadow: 
+      0 15px 50px rgba(0, 0, 0, 0.4),
+      0 0 25px rgba(255, 255, 255, 0.3);
   }
   
   .cube-face img {
@@ -184,19 +198,28 @@
   
   .cube-wrapper:hover .cube {
     animation-play-state: running;
-    transform: scale(1.02);
+    transform: scale(1.03);
+  }
+  
+  @media (max-width: 600px) {
+    .cube-wrapper {
+      width: min(260px, 82vw);
+      height: min(390px, 1.5 * 82vw);
+    }
   }
 }
 
 @media (max-width: 480px) {
+  header {
+    gap: 20px;
+  }
+  
   .cube-wrapper {
-    width: 200px;
-    height: 300px;
+    width: min(240px, 90vw);
+    height: min(360px, 1.5 * 90vw);
   }
   
   .cube-face {
-    width: 200px;
-    height: 300px;
     border-radius: 12px;
     border-width: 2px;
   }
@@ -206,7 +229,18 @@
   }
   
   .cube {
-    animation-duration: 22s; /* ← أبطأ على الشاشات الصغيرة */
+    animation-duration: 22s;
+  }
+  
+  @media (max-width: 360px) {
+    .cube-wrapper {
+      width: min(220px, 95vw);
+      height: min(330px, 1.5 * 95vw);
+    }
+    
+    .cube-face {
+      border-radius: 10px;
+    }
   }
 }
 

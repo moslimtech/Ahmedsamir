@@ -149,36 +149,113 @@
 }
 
 /* Responsive - أبعاد أكبر للموبايلات */
-@media (max-width: 768px) {
-  .cube-container {
-    perspective: 800px;
-  }
-  
+  /* Responsive Design - كيوب أكبر على جميع الأجهزة */
+@media (max-width: 1200px) {
   .cube-wrapper {
-    width: min(280px, 85vw);
-    height: min(420px, 1.5 * 85vw);
+    width: 350px;
+    height: 525px;
   }
   
   .cube-face {
+    width: 350px;
+    height: 525px;
+    border-radius: 22px;
+  }
+  
+  .cube-face img {
+    border-radius: 19px;
+  }
+}
+
+@media (max-width: 992px) {
+  .cube-wrapper {
+    width: 320px;
+    height: 480px;
+  }
+  
+  .cube-face {
+    width: 320px;
+    height: 480px;
+    border-radius: 20px;
+  }
+  
+  .cube-face img {
+    border-radius: 17px;
+  }
+}
+
+@media (max-width: 768px) {
+  header {
+    padding: 60px 15px 40px;
+    min-height: 95vh; /* ← ارتفاع أكبر لاستيعاب الكيوب */
+    gap: 25px;
+  }
+
+  .cube-container {
+    perspective: 1000px; /* ← perspective مناسب للموبايل */
+  }
+  
+  .cube-wrapper {
+    width: min(350px, 90vw);    /* ← أكبر بكثير! */
+    height: min(525px, 1.5 * 90vw); /* ← ارتفاع متناسب */
+  }
+
+  .cube-face {
     width: inherit;
     height: inherit;
-    border-radius: 15px;
-    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4);
-    border-width: 2.5px;
+    border-radius: 20px;
+    box-shadow: 0 20px 70px rgba(0, 0, 0, 0.5);
+    border-width: 3px;
   }
   
   .cube-face.active {
     box-shadow: 
-      0 15px 50px rgba(0, 0, 0, 0.4),
-      0 0 25px rgba(255, 255, 255, 0.3);
+      0 25px 80px rgba(0, 0, 0, 0.5),
+      0 0 35px rgba(255, 255, 255, 0.4);
   }
   
   .cube-face img {
-    border-radius: 12px;
+    border-radius: 17px;
   }
   
+  /* تحسين الـ layout للكيوب الأكبر */
+  .name-container {
+    order: -1;
+    margin-bottom: 20px;
+    max-width: 350px; /* ← نفس عرض الكيوب */
+  }
+  
+  h1 {
+    font-size: clamp(2.5rem, 6vw, 3.2rem); /* ← خط أكبر */
+    margin-bottom: 10px;
+  }
+  
+  h2 {
+    font-size: 1.3rem;
+  }
+  
+  .slogan {
+    font-size: 1.2rem;
+    padding: 0 20px;
+    max-width: 350px;
+  }
+  
+  .buttons {
+    order: 1;
+    margin-top: 20px;
+    gap: 15px;
+  }
+  
+  .btn {
+    width: 100%;
+    max-width: 320px; /* ← أكبر قليلاً */
+    padding: 18px 35px; /* ← padding أكبر */
+    font-size: 17px;
+  }
+  
+  /* حركة أقل شدة للكيوب الأكبر */
   .cube {
-    animation-duration: 20s;
+    animation-duration: 22s;
   }
   
   @keyframes gentleRotate {
@@ -186,64 +263,122 @@
       transform: rotateY(0deg) rotateX(0deg);
     }
     25% {
-      transform: rotateY(12deg) rotateX(-6deg);
+      transform: rotateY(10deg) rotateX(-5deg); /* ← زوايا أقل للحجم الأكبر */
     }
     50% {
-      transform: rotateY(0deg) rotateX(6deg);
+      transform: rotateY(0deg) rotateX(5deg);
     }
     75% {
-      transform: rotateY(-12deg) rotateX(-6deg);
+      transform: rotateY(-10deg) rotateX(-5deg);
     }
   }
   
-  .cube-wrapper:hover .cube {
-    animation-play-state: running;
-    transform: scale(1.03);
+  /* التفاعل اللمسي */
+  .cube-wrapper.touched .cube {
+    animation-play-state: paused !important;
+    transform: scale(1.04) rotateY(3deg) !important; /* ← تكبير أقل نسبيًا */
   }
   
   @media (max-width: 600px) {
     .cube-wrapper {
-      width: min(260px, 82vw);
-      height: min(390px, 1.5 * 82vw);
+      width: min(320px, 92vw);
+      height: min(480px, 1.5 * 92vw);
+    }
+    
+    .name-container {
+      max-width: 320px;
+    }
+    
+    .btn {
+      max-width: 300px;
     }
   }
 }
 
 @media (max-width: 480px) {
   header {
+    padding: 50px 10px 30px;
     gap: 20px;
+    min-height: 90vh;
   }
-  
+
   .cube-wrapper {
-    width: min(240px, 90vw);
-    height: min(360px, 1.5 * 90vw);
+    width: min(300px, 95vw);    /* ← أكبر بكثير! */
+    height: min(450px, 1.5 * 95vw);
   }
-  
+
   .cube-face {
-    border-radius: 12px;
-    border-width: 2px;
+    width: inherit;
+    height: inherit;
+    border-radius: 18px;
+    border-width: 2.5px;
   }
   
   .cube-face img {
-    border-radius: 10px;
+    border-radius: 15px;
+  }
+  
+  .name-container {
+    max-width: 300px;
+  }
+  
+  h1 {
+    font-size: clamp(2.2rem, 7vw, 2.8rem);
+  }
+  
+  h2 {
+    font-size: 1.2rem;
+  }
+  
+  .slogan {
+    font-size: 1.1rem;
+    padding: 0 15px;
+  }
+
+  .btn {
+    max-width: 280px;
+    padding: 16px 30px;
+    font-size: 16px;
   }
   
   .cube {
-    animation-duration: 22s;
+    animation-duration: 24s; /* ← أبطأ للحجم الأكبر */
   }
   
   @media (max-width: 360px) {
     .cube-wrapper {
-      width: min(220px, 95vw);
-      height: min(330px, 1.5 * 95vw);
+      width: min(280px, 96vw);    /* ← لا يزال كبير! */
+      height: min(420px, 1.5 * 96vw);
     }
     
     .cube-face {
-      border-radius: 10px;
+      border-radius: 15px;
+    }
+    
+    .cube-face img {
+      border-radius: 12px;
+    }
+    
+    .name-container {
+      max-width: 280px;
+    }
+    
+    h1 {
+      font-size: 2.2rem;
+    }
+    
+    .slogan {
+      font-size: 1rem;
+      padding: 0 10px;
+    }
+    
+    .btn {
+      max-width: 260px;
+      padding: 15px 25px;
+      font-size: 15px;
     }
   }
 }
-
     /* Name styling */
     h1 {
       font-size: 3.5rem;
